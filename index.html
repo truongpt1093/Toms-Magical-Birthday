@@ -1235,6 +1235,8 @@
        ========================================================================== -->
     <script type="module">
         import * as THREE from 'three';
+        import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+        import * as SkeletonUtils from 'three/addons/utils/SkeletonUtils.js';
 
         /* ==========================================================================
            1. CONFIGURATION VÀ CONSTANTS
@@ -2510,6 +2512,83 @@
                         f.rotation.z = Math.sin(time * 8 + idx) * 0.1;
                     });
                 }
+            }
+        };
+
+        /* ==========================================================================
+           2.5. CHARACTER ASSET MANAGER (LOAD & CACHE 3D GLTF MODELS WITH SKELETON UTILS)
+           ========================================================================== */
+        const CharacterAssetManager = {
+            cache: new Map(),
+            isReady: false,
+            loader: null,
+            models: [
+                'character-male-a', 'character-male-b', 'character-male-c',
+                'character-male-d', 'character-male-e', 'character-male-f',
+                'character-female-a', 'character-female-b', 'character-female-c',
+                'character-female-d', 'character-female-e', 'character-female-f'
+            ],
+            accessories: ['aid-glasses', 'aid-sunglasses', 'wheelchair'],
+
+            async init(onProgress) {
+                if (this.isReady) return true;
+                this.loader = new GLTFLoader();
+                const loadList = [...this.models, ...this.accessories];
+                let loadedCount = 0;
+
+                const loadPromises = loadList.map(async (name) => {
+                    const encodedUrl = encodeURI(`3D/Models/GLB format/${name}.glb`);
+                    try {
+                        const gltf = await this.loader.loadAsync(encodedUrl);
+                        gltf.scene.traverse((child) => {
+                            if (child.isMesh) {
+                                child.castShadow = true;
+                                child.receiveShadow = true;
+                                if (child.material) {
+                                    child.material.roughness = 0.8;
+                                }
+                            }
+                        });
+                        this.cache.set(name, {
+                            scene: gltf.scene,
+                            animations: gltf.animations || []
+                        });
+                    } catch (err) {
+                        console.warn(`[CharacterAssetManager] Không thể tải model ${name}:`, err);
+                    }
+                    loadedCount++;
+                    if (onProgress) {
+                        onProgress(loadedCount / loadList.length);
+                    }
+                });
+
+                await Promise.all(loadPromises);
+                this.isReady = this.cache.size > 0;
+                console.log(`[CharacterAssetManager] Đã tải xong ${this.cache.size}/${loadList.length} models 3D.`);
+                return this.isReady;
+            },
+
+            createInstance(name) {
+                const item = this.cache.get(name);
+                if (!item) return null;
+
+                const clonedScene = SkeletonUtils.clone(item.scene);
+                const mixer = new THREE.AnimationMixer(clonedScene);
+                const actions = new Map();
+
+                item.animations.forEach((clip) => {
+                    actions.set(clip.name, mixer.clipAction(clip));
+                });
+
+                return {
+                    root: clonedScene,
+                    mixer: mixer,
+                    actions: actions
+                };
+            },
+
+            getRandomCharacterKey() {
+                return this.models[Math.floor(Math.random() * this.models.length)];
             }
         };
 
@@ -4015,6 +4094,7 @@
         window.player = player;
         window.tom = tom;
         window.aiGuestManager = aiGuestManager;
+        window.CharacterAssetManager = CharacterAssetManager;
     </script>
 </body>
 </html>
