@@ -2829,7 +2829,7 @@
 
                     // Di chuyển theo hướng camera đang nhìn
                     const forward = new THREE.Vector3(-Math.sin(this.cameraAngle.theta), 0, -Math.cos(this.cameraAngle.theta));
-                    const right = new THREE.Vector3(forward.z, 0, -forward.x);
+                    const right = new THREE.Vector3(-forward.z, 0, forward.x);
 
                     const moveVec = new THREE.Vector3()
                         .addScaledVector(right, normX)
