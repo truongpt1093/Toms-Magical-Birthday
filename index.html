@@ -1755,6 +1755,9 @@
                 // Hàng rào gỗ pastel bao quanh
                 this.buildFence();
 
+                // Cây xanh hoàng gia 3D bao quanh khuôn viên
+                this.buildTrees();
+
                 // 1. CỔNG CHÀO SINH NHẬT (Z = 24 đến 28)
                 this.buildEntranceGate();
 
@@ -1802,6 +1805,46 @@
                 m.castShadow = true;
                 scene.add(m);
                 this.colliders.push({ x, z, r: 0.5 });
+            },
+
+            // Cây xanh hoàng gia 3D bao quanh khuôn viên vườn hoa
+            buildTrees() {
+                if (!CharacterAssetManager.isReady || !CharacterAssetManager.cache.has('tree')) return;
+
+                const treePositions = [];
+
+                // Viền phía Bắc (Z = -23)
+                for (let x = -24; x <= 24; x += 6) {
+                    treePositions.push({ x: x, z: -23 + ((Math.abs(x) % 4 === 0) ? 0.8 : -0.5) });
+                }
+
+                // Viền phía Nam (Z = 28, chừa cổng lối đi x từ -5 đến 5)
+                for (let x = -24; x <= 24; x += 6) {
+                    if (Math.abs(x) < 5) continue;
+                    treePositions.push({ x: x, z: 28 + ((Math.abs(x) % 4 === 0) ? -0.6 : 0.6) });
+                }
+
+                // Viền phía Tây (X = -25)
+                for (let z = -18; z <= 24; z += 6) {
+                    treePositions.push({ x: -25 + ((Math.abs(z) % 4 === 0) ? 0.7 : -0.5), z: z });
+                }
+
+                // Viền phía Đông (X = 25)
+                for (let z = -18; z <= 24; z += 6) {
+                    treePositions.push({ x: 25 + ((Math.abs(z) % 4 === 0) ? -0.7 : 0.5), z: z });
+                }
+
+                treePositions.forEach((pos, idx) => {
+                    const tree = CharacterAssetManager.createInstance('tree');
+                    if (tree) {
+                        const scale = 1.8 + ((idx * 7) % 5) * 0.12; // 1.8 đến 2.3
+                        tree.root.scale.set(scale, scale, scale);
+                        tree.root.position.set(pos.x, 0, pos.z);
+                        tree.root.rotation.y = (idx * 1.3) % (Math.PI * 2);
+                        scene.add(tree.root);
+                        this.colliders.push({ x: pos.x, z: pos.z, r: 0.9 });
+                    }
+                });
             },
 
             // 1. Cổng chào sinh nhật hoàng gia
@@ -2419,6 +2462,18 @@
                     bCluster.position.set(bx, by, 0);
                     photoGroup.add(bCluster);
                 });
+
+                // Tượng hiệp sĩ hoàng gia kỷ niệm (Statue landmark)
+                if (CharacterAssetManager.isReady && CharacterAssetManager.cache.has('statue')) {
+                    const statue = CharacterAssetManager.createInstance('statue');
+                    if (statue) {
+                        statue.root.scale.set(1.8, 1.8, 1.8);
+                        statue.root.position.set(-2.8, 0, 1.0);
+                        statue.root.rotation.y = Math.PI / 4;
+                        photoGroup.add(statue.root);
+                        this.colliders.push({ x: 17 - 2.8, z: 1.0, r: 0.8 });
+                    }
+                }
 
                 scene.add(photoGroup);
                 this.colliders.push({ x: 17, z: 0, r: 2.5 });
