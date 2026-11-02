@@ -1,0 +1,4020 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Tom's Magical Birthday – Sinh Nhật Diệu Kỳ Của Tôm (13/11/2025)</title>
+    <meta name="description" content="Món quà 3D sinh nhật diệu kỳ dành tặng bé Phạm Hoàng Minh Trí (Tôm) tròn 1 tuổi - 13/11/2025.">
+    <meta name="theme-color" content="#A0D2EB">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+
+    <style>
+        /* ==========================================================================
+           1. CSS RESET & VARIABLES (TÔNG MÀU PASTEL TEDDY BABY)
+           ========================================================================== */
+        :root {
+            --baby-blue: #89CFF0;
+            --baby-blue-light: #E0F2FE;
+            --baby-blue-deep: #4A90E2;
+            --cream: #FFFDD0;
+            --cream-warm: #FFFBEA;
+            --teddy-brown: #9E6B47;
+            --teddy-light: #C68B59;
+            --teddy-soft: #F5E6D3;
+            --champagne-gold: #F5D061;
+            --champagne-warm: #E5A93C;
+            --pastel-pink: #FFD1DC;
+            --pastel-mint: #C1F0D0;
+            --pastel-lavender: #E6E6FA;
+            --white: #FFFFFF;
+            --dark-text: #2C3E50;
+            --sub-text: #64748B;
+            --border-radius-lg: 20px;
+            --border-radius-md: 14px;
+            --border-radius-sm: 8px;
+            --shadow-soft: 0 10px 30px rgba(74, 144, 226, 0.18);
+            --shadow-card: 0 16px 40px rgba(0, 0, 0, 0.12);
+            --transition-smooth: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        html, body {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background: linear-gradient(180deg, #A0D2EB 0%, #DCEEF8 45%, #EBF4F6 100%);
+            font-family: 'Nunito', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            color: var(--dark-text);
+            touch-action: none;
+        }
+
+        #canvas-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+
+        canvas {
+            display: block;
+            width: 100%;
+            height: 100%;
+        }
+
+        /* Thông báo Offline / Lỗi tải Three.js */
+        #offline-alert {
+            display: none;
+            position: fixed;
+            top: 16px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #FF6B6B;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 30px;
+            font-weight: 700;
+            font-size: 14px;
+            box-shadow: 0 6px 20px rgba(255, 107, 107, 0.4);
+            z-index: 9999;
+        }
+
+        /* Toast thông báo vui tươi */
+        .game-toast {
+            position: fixed;
+            top: 24px;
+            left: 50%;
+            transform: translateX(-50%) translateY(0);
+            background: rgba(255, 255, 255, 0.98);
+            border: 3px solid var(--baby-blue);
+            color: var(--dark-text);
+            padding: 12px 24px;
+            border-radius: 30px;
+            font-size: 14px;
+            font-weight: 800;
+            box-shadow: var(--shadow-card);
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            pointer-events: none;
+            opacity: 1;
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .game-toast.hidden {
+            opacity: 0;
+            transform: translateX(-50%) translateY(-20px);
+        }
+
+        /* ==========================================================================
+           2. UI MÀN HÌNH MỞ ĐẦU & MODAL BẮT ĐẦU (WELCOME SCREEN)
+           ========================================================================== */
+        .modal-backdrop {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(44, 62, 80, 0.5);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            padding: 16px;
+            opacity: 1;
+            transition: opacity 0.4s ease;
+        }
+
+        .modal-backdrop.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .card-modal {
+            background: var(--cream-warm);
+            border: 4px solid var(--white);
+            border-radius: 28px;
+            box-shadow: var(--shadow-card);
+            padding: 28px 24px;
+            width: 100%;
+            max-width: 420px;
+            max-height: 90vh;
+            overflow-y: auto;
+            text-align: center;
+            position: relative;
+            transform: scale(1);
+            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .modal-backdrop.hidden .card-modal {
+            transform: scale(0.9);
+        }
+
+        .title-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--champagne-gold), var(--champagne-warm));
+            color: #7A4B00;
+            font-size: 12px;
+            font-weight: 900;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            padding: 6px 14px;
+            border-radius: 20px;
+            margin-bottom: 8px;
+            box-shadow: 0 4px 10px rgba(245, 208, 97, 0.4);
+        }
+
+        .main-title {
+            font-size: 24px;
+            font-weight: 900;
+            color: var(--dark-text);
+            line-height: 1.25;
+            margin-bottom: 4px;
+        }
+
+        .main-title span {
+            color: var(--baby-blue-deep);
+        }
+
+        .sub-title {
+            font-size: 14px;
+            color: var(--sub-text);
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+
+        .hero-banner-icon {
+            font-size: 54px;
+            margin: 6px 0 16px 0;
+            animation: floatBob 3s ease-in-out infinite;
+        }
+
+        @keyframes floatBob {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-8px) rotate(3deg); }
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+            text-align: left;
+        }
+
+        .form-label {
+            font-size: 13px;
+            font-weight: 800;
+            color: var(--teddy-brown);
+            margin-bottom: 6px;
+            display: block;
+        }
+
+        .input-text {
+            width: 100%;
+            background: var(--white);
+            border: 2px solid #E2E8F0;
+            border-radius: var(--border-radius-md);
+            padding: 12px 16px;
+            font-size: 16px;
+            font-family: inherit;
+            font-weight: 700;
+            color: var(--dark-text);
+            outline: none;
+            transition: var(--transition-smooth);
+        }
+
+        .input-text:focus {
+            border-color: var(--baby-blue);
+            box-shadow: 0 0 0 4px rgba(137, 207, 240, 0.25);
+        }
+
+        .color-selector {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-top: 8px;
+        }
+
+        .color-dot {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 3px solid var(--white);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.12);
+            transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .color-dot:active, .color-dot.active {
+            transform: scale(1.22);
+            border-color: var(--dark-text);
+            box-shadow: 0 6px 14px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-primary {
+            width: 100%;
+            background: linear-gradient(135deg, #4A90E2 0%, #357ABD 100%);
+            color: white;
+            border: none;
+            border-radius: 30px;
+            padding: 16px 24px;
+            font-size: 18px;
+            font-weight: 900;
+            font-family: inherit;
+            cursor: pointer;
+            box-shadow: 0 8px 24px rgba(74, 144, 226, 0.4);
+            transition: var(--transition-smooth);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .btn-primary:active {
+            transform: scale(0.97);
+            box-shadow: 0 4px 12px rgba(74, 144, 226, 0.3);
+        }
+
+        .btn-secondary {
+            background: var(--white);
+            color: var(--dark-text);
+            border: 2px solid #E2E8F0;
+            border-radius: 24px;
+            padding: 10px 18px;
+            font-size: 14px;
+            font-weight: 800;
+            font-family: inherit;
+            cursor: pointer;
+            transition: var(--transition-smooth);
+        }
+
+        .btn-secondary:active {
+            transform: scale(0.96);
+            background: #F8FAFC;
+        }
+
+        /* ==========================================================================
+           3. HUD TRONG GAME (RESPONSIVE CHO ĐIỆN THOẠI & MÁY TÍNH)
+           ========================================================================== */
+        #game-hud {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 10;
+            pointer-events: none;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: env(safe-area-inset-top, 14px) 14px env(safe-area-inset-bottom, 14px) 14px;
+        }
+
+        .hud-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 10px;
+            pointer-events: auto;
+        }
+
+        .hud-badge {
+            background: rgba(255, 255, 255, 0.92);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            padding: 8px 14px;
+            border-radius: 24px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+            border: 2px solid rgba(255, 255, 255, 0.8);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+            font-weight: 800;
+            color: var(--dark-text);
+        }
+
+        .player-avatar-mini {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: var(--baby-blue);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+        }
+
+        .guest-counter {
+            background: linear-gradient(135deg, rgba(255, 253, 208, 0.95), rgba(255, 251, 234, 0.95));
+            border: 2px solid var(--champagne-gold);
+            color: #8C5B00;
+        }
+
+        .hud-top-right {
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn-circle-hud {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.94);
+            border: 2px solid white;
+            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            cursor: pointer;
+            transition: var(--transition-smooth);
+            pointer-events: auto;
+        }
+
+        .btn-circle-hud:active {
+            transform: scale(0.92);
+            background: #F1F5F9;
+        }
+
+        /* Nút tương tác & điều khiển dưới */
+        .hud-bottom {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            width: 100%;
+            pointer-events: none;
+        }
+
+        /* Vùng Joystick cho điện thoại */
+        #joystick-zone {
+            width: 140px;
+            height: 140px;
+            position: relative;
+            pointer-events: auto;
+            margin-bottom: 10px;
+            margin-left: 6px;
+            touch-action: none;
+        }
+
+        #joystick-base {
+            width: 120px;
+            height: 120px;
+            background: rgba(255, 255, 255, 0.45);
+            border: 3px solid rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(4px);
+            border-radius: 50%;
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+        }
+
+        #joystick-stick {
+            width: 54px;
+            height: 54px;
+            background: linear-gradient(135deg, var(--baby-blue), var(--baby-blue-deep));
+            border: 3px solid white;
+            border-radius: 50%;
+            position: absolute;
+            top: 43px;
+            left: 43px;
+            box-shadow: 0 6px 16px rgba(74, 144, 226, 0.4);
+            pointer-events: none;
+            transition: transform 0.05s ease-out;
+        }
+
+        /* Nhóm nút bên phải */
+        .hud-actions-right {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 12px;
+            pointer-events: auto;
+            margin-bottom: 10px;
+            margin-right: 6px;
+        }
+
+        .quick-actions-row {
+            display: flex;
+            gap: 8px;
+        }
+
+        @media (max-width: 600px) {
+            .quick-actions-row {
+                flex-direction: column;
+                align-items: flex-end;
+                gap: 6px;
+            }
+            .btn-pill-action {
+                padding: 6px 12px;
+                font-size: 11px;
+            }
+        }
+
+        .btn-pill-action {
+            background: rgba(255, 255, 255, 0.94);
+            border: 2px solid white;
+            border-radius: 20px;
+            padding: 8px 14px;
+            font-size: 13px;
+            font-weight: 800;
+            color: var(--dark-text);
+            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: var(--transition-smooth);
+        }
+
+        .btn-pill-action:active {
+            transform: scale(0.95);
+        }
+
+        /* Nút TƯƠNG TÁC LỚN */
+        #btn-main-interact {
+            width: 76px;
+            height: 76px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #F5D061 0%, #E5A93C 100%);
+            border: 4px solid var(--white);
+            color: #613C00;
+            font-size: 13px;
+            font-weight: 900;
+            box-shadow: 0 10px 28px rgba(229, 169, 60, 0.45);
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 2px;
+            transition: var(--transition-smooth);
+            animation: pulseGlow 2.5s infinite;
+        }
+
+        #btn-main-interact span.icon {
+            font-size: 26px;
+        }
+
+        #btn-main-interact:active {
+            transform: scale(0.92);
+        }
+
+        @keyframes pulseGlow {
+            0%, 100% { box-shadow: 0 10px 28px rgba(229, 169, 60, 0.45); }
+            50% { box-shadow: 0 12px 36px rgba(229, 169, 60, 0.7); }
+        }
+
+        /* Prompt hành động nổi ở giữa dưới màn hình */
+        #interaction-prompt {
+            position: fixed;
+            bottom: 110px;
+            left: 50%;
+            transform: translateX(-50%) translateY(20px);
+            background: rgba(44, 62, 80, 0.9);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 24px;
+            font-size: 14px;
+            font-weight: 800;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            pointer-events: none;
+            opacity: 0;
+            transition: all 0.25s cubic-bezier(0.25, 0.8, 0.25, 1);
+            z-index: 50;
+            white-space: nowrap;
+        }
+
+        #interaction-prompt.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        #interaction-prompt kbd {
+            background: var(--champagne-gold);
+            color: #7A4B00;
+            padding: 2px 8px;
+            border-radius: 6px;
+            font-weight: 900;
+            font-size: 12px;
+        }
+
+        /* Bong bóng hội thoại AI Guest trên màn hình */
+        .speech-bubble-3d {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.96);
+            color: var(--dark-text);
+            padding: 6px 12px;
+            border-radius: 16px;
+            font-size: 12px;
+            font-weight: 800;
+            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12);
+            pointer-events: none;
+            white-space: nowrap;
+            transform: translate(-50%, -100%);
+            border: 2px solid var(--baby-blue-light);
+            z-index: 20;
+            animation: bubblePop 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .speech-bubble-3d::after {
+            content: '';
+            position: absolute;
+            bottom: -6px;
+            left: 50%;
+            transform: translateX(-50%);
+            border-width: 6px 6px 0;
+            border-style: solid;
+            border-color: rgba(255, 255, 255, 0.96) transparent transparent;
+        }
+
+        @keyframes bubblePop {
+            0% { transform: translate(-50%, -80%) scale(0.6); opacity: 0; }
+            100% { transform: translate(-50%, -100%) scale(1); opacity: 1; }
+        }
+
+        /* ==========================================================================
+           4. GIAO DIỆN CÁC HOẠT ĐỘNG VÀ MINI-GAMES
+           ========================================================================== */
+        /* Mini-game Thổi nến */
+        .blow-meter-container {
+            width: 100%;
+            height: 22px;
+            background: #E2E8F0;
+            border-radius: 12px;
+            overflow: hidden;
+            margin: 16px 0;
+            position: relative;
+        }
+
+        .blow-meter-fill {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #F5D061, #FF6B6B);
+            transition: width 0.1s linear;
+        }
+
+        .btn-blow-candle {
+            background: linear-gradient(135deg, #FF7675, #D63031);
+            color: white;
+            border: none;
+            border-radius: 30px;
+            padding: 16px 30px;
+            font-size: 18px;
+            font-weight: 900;
+            font-family: inherit;
+            cursor: pointer;
+            box-shadow: 0 8px 24px rgba(214, 48, 49, 0.35);
+            margin-top: 10px;
+            width: 100%;
+            transition: var(--transition-smooth);
+        }
+
+        .btn-blow-candle:active {
+            transform: scale(0.96);
+        }
+
+        /* Mini-game Hứng bóng bay */
+        #balloon-game-banner {
+            position: fixed;
+            top: 70px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(255, 255, 255, 0.95);
+            padding: 10px 24px;
+            border-radius: 30px;
+            box-shadow: var(--shadow-card);
+            border: 3px solid var(--champagne-gold);
+            display: none;
+            align-items: center;
+            gap: 20px;
+            z-index: 100;
+            font-weight: 800;
+        }
+
+        #balloon-game-banner.show {
+            display: flex;
+        }
+
+        /* Tùy chỉnh bánh kem */
+        .cake-config-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin: 10px 0;
+            font-size: 14px;
+            font-weight: 800;
+        }
+
+        .cake-flavor-options {
+            display: flex;
+            gap: 8px;
+        }
+
+        .cake-flavor-chip {
+            padding: 6px 12px;
+            border-radius: 16px;
+            background: var(--white);
+            border: 2px solid #E2E8F0;
+            font-size: 12px;
+            cursor: pointer;
+        }
+
+        .cake-flavor-chip.active {
+            border-color: var(--teddy-brown);
+            background: var(--teddy-soft);
+            color: var(--teddy-brown);
+        }
+
+        /* Gửi lời chúc */
+        .wish-topics-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            justify-content: center;
+            margin: 12px 0;
+        }
+
+        .wish-topic-tag {
+            background: var(--white);
+            border: 2px solid #E2E8F0;
+            border-radius: 20px;
+            padding: 6px 12px;
+            font-size: 12px;
+            font-weight: 800;
+            cursor: pointer;
+            transition: var(--transition-smooth);
+        }
+
+        .wish-topic-tag:active, .wish-topic-tag.active {
+            border-color: var(--baby-blue-deep);
+            background: var(--baby-blue-light);
+            color: var(--baby-blue-deep);
+        }
+
+        .wish-textarea {
+            width: 100%;
+            height: 90px;
+            background: var(--white);
+            border: 2px solid #E2E8F0;
+            border-radius: var(--border-radius-md);
+            padding: 10px;
+            font-family: inherit;
+            font-size: 14px;
+            resize: none;
+            outline: none;
+        }
+
+        .wish-textarea:focus {
+            border-color: var(--baby-blue);
+        }
+
+        /* Sổ lưu niệm */
+        .scrapbook-tabs {
+            display: flex;
+            gap: 6px;
+            border-bottom: 2px solid #E2E8F0;
+            padding-bottom: 8px;
+            margin-bottom: 14px;
+            overflow-x: auto;
+        }
+
+        .scrapbook-tab-btn {
+            background: none;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 14px;
+            font-family: inherit;
+            font-size: 13px;
+            font-weight: 800;
+            color: var(--sub-text);
+            cursor: pointer;
+            white-space: nowrap;
+        }
+
+        .scrapbook-tab-btn.active {
+            background: var(--baby-blue-light);
+            color: var(--baby-blue-deep);
+        }
+
+        .scrapbook-content {
+            min-height: 220px;
+            max-height: 50vh;
+            overflow-y: auto;
+            text-align: left;
+            font-size: 14px;
+        }
+
+        .wish-item-card {
+            background: var(--white);
+            border-radius: 14px;
+            padding: 12px;
+            margin-bottom: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+            border-left: 4px solid var(--baby-blue);
+        }
+
+        .wish-item-header {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            font-weight: 800;
+            color: var(--teddy-brown);
+            margin-bottom: 4px;
+        }
+
+        /* Hộp quà mở ra */
+        .gift-reveal-box {
+            font-size: 60px;
+            margin: 16px 0;
+            animation: bounceIn 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        @keyframes bounceIn {
+            0% { transform: scale(0.2); opacity: 0; }
+            70% { transform: scale(1.15); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        /* Modal Chia sẻ ảnh */
+        #share-canvas-preview {
+            width: 100%;
+            max-height: 380px;
+            object-fit: contain;
+            border-radius: 16px;
+            box-shadow: var(--shadow-card);
+            margin: 14px 0;
+            background: #FAFAFA;
+        }
+
+        /* Hướng dẫn lần đầu (3 bước) */
+        .guide-step {
+            display: none;
+            margin: 14px 0;
+        }
+
+        .guide-step.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Close Button cho Modal */
+        .btn-modal-close {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            background: rgba(0, 0, 0, 0.06);
+            border: none;
+            font-size: 18px;
+            font-weight: 900;
+            color: var(--sub-text);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn-modal-close:hover {
+            background: rgba(0, 0, 0, 0.12);
+        }
+
+        /* Desktop Keyboard Hint */
+        .desktop-hint {
+            display: none;
+            font-size: 12px;
+            color: var(--sub-text);
+            margin-top: 10px;
+            font-weight: 600;
+        }
+
+        @media (min-width: 768px) {
+            .desktop-hint {
+                display: block;
+            }
+            #joystick-zone {
+                display: none; /* Ẩn joystick ảo trên máy tính có bàn phím */
+            }
+        }
+    </style>
+
+    <!-- Three.js qua CDN ES Module bằng Importmap chuẩn -->
+    <script type="importmap">
+    {
+      "imports": {
+        "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+        "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+      }
+    }
+    </script>
+</head>
+<body>
+
+    <!-- Vùng Render 3D Three.js -->
+    <div id="canvas-container"></div>
+
+    <!-- Thông báo mất kết nối & Toast -->
+    <div id="offline-alert">⚠️ Đang mất kết nối mạng. Bạn vẫn có thể tiếp tục chơi!</div>
+    <div id="game-toast" class="game-toast hidden"></div>
+
+    <!-- ==========================================================================
+       GIAO DIỆN MÀN HÌNH MỞ ĐẦU (WELCOME SCREEN)
+       ========================================================================== -->
+    <div class="modal-backdrop" id="welcome-modal">
+        <div class="card-modal">
+            <div class="title-badge">🎉 THÔI NÔI 1 TUỔI BÉ TÔM 🎉</div>
+            <h1 class="main-title">TOM'S MAGICAL <span>BIRTHDAY</span></h1>
+            <p class="sub-title">Sinh Nhật Diệu Kỳ Của Bé Phạm Hoàng Minh Trí (Tôm)<br>13/11/2025 – 13/11/2026</p>
+
+            <div class="hero-banner-icon">🧸🎂🎈</div>
+
+            <div class="form-group">
+                <label class="form-label" for="player-name-input">Tên của bạn là gì nè?</label>
+                <input type="text" id="player-name-input" class="input-text" maxlength="25" placeholder="Nhập tên của bạn..." value="Khách Quý Của Tôm">
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Chọn màu trang phục dự tiệc:</label>
+                <div class="color-selector" id="outfit-color-picker">
+                    <div class="color-dot active" data-color="#89CFF0" style="background: #89CFF0;" title="Xanh Baby Blue"></div>
+                    <div class="color-dot" data-color="#FFD1DC" style="background: #FFD1DC;" title="Hồng Pastel"></div>
+                    <div class="color-dot" data-color="#C1F0D0" style="background: #C1F0D0;" title="Bạc Hà Mint"></div>
+                    <div class="color-dot" data-color="#F5D061" style="background: #F5D061;" title="Vàng Champagne"></div>
+                    <div class="color-dot" data-color="#E6E6FA" style="background: #E6E6FA;" title="Tím Lavender"></div>
+                    <div class="color-dot" data-color="#C68B59" style="background: #C68B59;" title="Nâu Teddy"></div>
+                </div>
+            </div>
+
+            <button class="btn-primary" id="btn-enter-party" type="button">
+                <span>VÀO TIỆC NGAY 🎈</span>
+            </button>
+
+            <p class="desktop-hint">💡 Trên máy tính: Dùng phím WASD / Mũi tên để di chuyển, Kéo chuột để xoay góc nhìn, Phím [E] để tương tác.</p>
+        </div>
+    </div>
+
+    <!-- ==========================================================================
+       GIAO DIỆN HƯỚNG DẪN 3 BƯỚC CHO NGƯỜI CHƠI MỚI (GUIDE MODAL)
+       ========================================================================== -->
+    <div class="modal-backdrop hidden" id="guide-modal">
+        <div class="card-modal">
+            <div class="title-badge">✨ HƯỚNG DẪN DỰ TIỆC ✨</div>
+            
+            <div class="guide-step active" id="guide-step-1">
+                <div style="font-size: 52px; margin: 12px 0;">🕹️</div>
+                <h3 style="font-size: 18px; font-weight: 900; margin-bottom: 8px;">Bước 1: Tự do dạo chơi</h3>
+                <p style="font-size: 14px; color: var(--sub-text);">Dùng cần gạt ảo (điện thoại) hoặc phím WASD (máy tính) để dạo quanh hoa viên sinh nhật rực rỡ sắc màu.</p>
+            </div>
+
+            <div class="guide-step" id="guide-step-2">
+                <div style="font-size: 52px; margin: 12px 0;">🧸</div>
+                <h3 style="font-size: 18px; font-weight: 900; margin-bottom: 8px;">Bước 2: Gặp gỡ Tôm & Khách mời</h3>
+                <p style="font-size: 14px; color: var(--sub-text);">Tiến lại gần bé Tôm tại sân khấu, trò chuyện với các khách mời AI tí hon và khu vui chơi.</p>
+            </div>
+
+            <div class="guide-step" id="guide-step-3">
+                <div style="font-size: 52px; margin: 12px 0;">🎂</div>
+                <h3 style="font-size: 18px; font-weight: 900; margin-bottom: 8px;">Bước 3: Tương tác & Thổi nến</h3>
+                <p style="font-size: 14px; color: var(--sub-text);">Chạm nút "Tương tác" hoặc phím [E] để thổi nến, mở hộp quà bí mật, trang trí bánh và gửi lời chúc yêu thương!</p>
+            </div>
+
+            <div style="display: flex; gap: 10px; margin-top: 20px;">
+                <button class="btn-secondary" id="btn-guide-skip" style="flex: 1;" type="button">Bỏ qua</button>
+                <button class="btn-primary" id="btn-guide-next" style="flex: 2; padding: 12px 20px;" type="button">Tiếp theo ➔</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==========================================================================
+       HUD TRONG GAME
+       ========================================================================== -->
+    <div id="game-hud" style="display: none;">
+        <!-- Thanh phía trên -->
+        <div class="hud-top">
+            <div style="display: flex; flex-direction: column; gap: 6px;">
+                <div class="hud-badge">
+                    <div class="player-avatar-mini" id="hud-player-avatar">🌟</div>
+                    <span id="hud-player-name">Khách Quý</span>
+                </div>
+                <div class="hud-badge guest-counter" id="hud-guest-counter">
+                    <span>🎈 Hôm nay có <b>42</b> người đến chung vui</span>
+                </div>
+            </div>
+
+            <div class="hud-top-right">
+                <button class="btn-circle-hud" id="hud-btn-sound" title="Bật/Tắt âm thanh">🔊</button>
+                <button class="btn-circle-hud" id="hud-btn-stage" title="Quay về sân khấu bánh kem">🎂</button>
+            </div>
+        </div>
+
+        <!-- Banner khi chơi mini-game hứng bóng bay -->
+        <div id="balloon-game-banner">
+            <div>🎈 Đã hứng: <span id="bg-score" style="color: #4A90E2; font-size: 18px;">0</span></div>
+            <div>⏱️ Còn lại: <span id="bg-timer" style="color: #D63031; font-size: 18px;">30s</span></div>
+            <button class="btn-secondary" id="bg-btn-exit" style="padding: 4px 10px; font-size: 12px;">Dừng</button>
+        </div>
+
+        <!-- Prompt tương tác hiển thị khi lại gần vật thể -->
+        <div id="interaction-prompt">
+            <span id="interaction-prompt-icon">✨</span>
+            <span id="interaction-prompt-text">Nhấn để tương tác</span>
+            <kbd>E</kbd>
+        </div>
+
+        <!-- Thanh điều khiển phía dưới -->
+        <div class="hud-bottom">
+            <!-- Cần gạt joystick di động -->
+            <div id="joystick-zone">
+                <div id="joystick-base"></div>
+                <div id="joystick-stick"></div>
+            </div>
+
+            <!-- Các nút hành động bên phải -->
+            <div class="hud-actions-right">
+                <div class="quick-actions-row">
+                    <button class="btn-pill-action" id="hud-btn-scrapbook">📖 Sổ lưu niệm</button>
+                    <button class="btn-pill-action" id="hud-btn-photo">📸 Chụp ảnh</button>
+                </div>
+                
+                <button id="btn-main-interact" title="Tương tác">
+                    <span class="icon">✨</span>
+                    <span>HÀNH ĐỘNG</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==========================================================================
+       MODAL 1: HOẠT ĐỘNG THỔI NẾN SINH NHẬT CÙNG TÔM
+       ========================================================================== -->
+    <div class="modal-backdrop hidden" id="candle-modal">
+        <div class="card-modal">
+            <button class="btn-modal-close" data-close="candle-modal">✕</button>
+            <div class="title-badge">🎂 KHOẢNH KHẮC THIÊNG LIÊNG 🎂</div>
+            <h2 style="font-size: 22px; font-weight: 900; margin: 6px 0;">Cùng Tôm Thổi Nến Nhé!</h2>
+            <p style="font-size: 14px; color: var(--sub-text);">Hãy nhấn giữ nút thổi hoặc chạm liên tục thật nhanh để dập tắt những ngọn nến mừng tuổi mới của bé Tôm!</p>
+
+            <div style="font-size: 64px; margin: 16px 0;" id="candle-visual-status">🕯️🕯️🕯️</div>
+
+            <div class="blow-meter-container">
+                <div class="blow-meter-fill" id="candle-blow-fill"></div>
+            </div>
+
+            <button class="btn-blow-candle" id="btn-candle-blow" type="button">
+                💨 NHẤN GIỮ ĐỂ THỔI NẾN!
+            </button>
+
+            <!-- Lời chúc khi thổi nến xong -->
+            <div id="candle-finish-message" style="display: none; margin-top: 16px; background: var(--baby-blue-light); border-radius: 16px; padding: 14px;">
+                <p style="font-size: 15px; font-weight: 800; color: #2C3E50; line-height: 1.5;">
+                    🎉 "Chúc bé Tôm tuổi mới luôn khỏe mạnh, vui vẻ, khám phá thật nhiều điều mới và lớn lên trong muôn vàn tình yêu thương của gia đình!"
+                </p>
+                <button class="btn-primary" id="btn-candle-continue" style="margin-top: 12px; padding: 10px 18px; font-size: 15px;">Tiếp tục dự tiệc ✨</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==========================================================================
+       MODAL 2: MỞ HỘP QUÀ BÍ MẬT
+       ========================================================================== -->
+    <div class="modal-backdrop hidden" id="gift-modal">
+        <div class="card-modal">
+            <button class="btn-modal-close" data-close="gift-modal">✕</button>
+            <div class="title-badge">🎁 QUÀ TẶNG BÍ MẬT 🎁</div>
+            <div class="gift-reveal-box" id="gift-reveal-icon">🎁</div>
+            <h3 id="gift-reveal-title" style="font-size: 20px; font-weight: 900; color: var(--dark-text); margin-bottom: 6px;">Hộp Quà Diệu Kỳ</h3>
+            <p id="gift-reveal-desc" style="font-size: 14px; color: var(--teddy-brown); font-weight: 700; line-height: 1.5; margin-bottom: 20px;">
+                Bạn vừa mở một món quà xinh xắn dành cho bé Tôm!
+            </p>
+            <button class="btn-primary" id="btn-claim-gift" style="padding: 12px 20px; font-size: 15px;">Thu nhận món quà ✨</button>
+        </div>
+    </div>
+
+    <!-- ==========================================================================
+       MODAL 3: TRANG TRÍ BÁNH SINH NHẬT
+       ========================================================================== -->
+    <div class="modal-backdrop hidden" id="cake-modal">
+        <div class="card-modal">
+            <button class="btn-modal-close" data-close="cake-modal">✕</button>
+            <div class="title-badge">🎨 TIỆM BÁNH SINH NHẬT 🎨</div>
+            <h3 style="font-size: 20px; font-weight: 900; margin: 4px 0 14px 0;">Thiết Kế Bánh Kem Cho Tôm</h3>
+
+            <div class="cake-config-row">
+                <span>Số tầng bánh:</span>
+                <div class="cake-flavor-options" id="cake-tiers-picker">
+                    <div class="cake-flavor-chip active" data-tiers="2">2 Tầng</div>
+                    <div class="cake-flavor-chip" data-tiers="3">3 Tầng</div>
+                    <div class="cake-flavor-chip" data-tiers="1">1 Tầng</div>
+                </div>
+            </div>
+
+            <div class="cake-config-row">
+                <span>Vị / Màu kem:</span>
+                <div class="cake-flavor-options" id="cake-color-picker">
+                    <div class="cake-flavor-chip active" data-color="#FFFBEA">Vani 🍦</div>
+                    <div class="cake-flavor-chip" data-color="#FFD1DC">Dâu 🍓</div>
+                    <div class="cake-flavor-chip" data-color="#BEE3F8">Baby Blue 💙</div>
+                    <div class="cake-flavor-chip" data-color="#C68B59">Socola 🍫</div>
+                </div>
+            </div>
+
+            <div class="cake-config-row">
+                <span>Topping trang trí:</span>
+                <div class="cake-flavor-options" id="cake-topping-picker">
+                    <div class="cake-flavor-chip active" data-topping="strawberries">Dâu tây 🍓</div>
+                    <div class="cake-flavor-chip" data-topping="stars">Ngôi sao ⭐</div>
+                    <div class="cake-flavor-chip" data-topping="teddy">Gấu bông 🧸</div>
+                </div>
+            </div>
+
+            <div class="form-group" style="margin-top: 14px;">
+                <label class="form-label">Chữ in trên bánh:</label>
+                <input type="text" id="cake-custom-text" class="input-text" maxlength="20" value="TOM TRÒN 1 TUỔI">
+            </div>
+
+            <button class="btn-primary" id="btn-save-cake" style="margin-top: 8px;">Cập Nhật Bánh Lên Sân Khấu 🎂</button>
+        </div>
+    </div>
+
+    <!-- ==========================================================================
+       MODAL 4: GỬI LỜI CHÚC CHO BÉ TÔM
+       ========================================================================== -->
+    <div class="modal-backdrop hidden" id="wish-modal">
+        <div class="card-modal">
+            <button class="btn-modal-close" data-close="wish-modal">✕</button>
+            <div class="title-badge">💌 GỬI LỜI CHÚC YÊU THƯƠNG 💌</div>
+            <h3 style="font-size: 19px; font-weight: 900; margin: 4px 0 10px 0;">Lời Chúc Dành Tặng Tôm</h3>
+
+            <p style="font-size: 13px; color: var(--sub-text);">Chọn một chủ đề nhanh hoặc tự gõ lời chúc từ trái tim bạn:</p>
+            
+            <div class="wish-topics-grid">
+                <div class="wish-topic-tag" data-topic="Sức khỏe">💪 Khỏe mạnh</div>
+                <div class="wish-topic-tag" data-topic="Bình an">🕊️ Bình an</div>
+                <div class="wish-topic-tag" data-topic="Học hỏi">🧠 Thông minh</div>
+                <div class="wish-topic-tag" data-topic="Khám phá">🚀 Khám phá</div>
+                <div class="wish-topic-tag" data-topic="Gia đình">🏡 Ấm áp</div>
+                <div class="wish-topic-tag" data-topic="Hạnh phúc">🌟 Vui vẻ</div>
+            </div>
+
+            <textarea id="wish-input" class="wish-textarea" maxlength="120" placeholder="Viết lời chúc yêu thương cho Tôm (tối đa 120 ký tự)..."></textarea>
+            <div style="text-align: right; font-size: 12px; color: var(--sub-text); margin-bottom: 12px;">
+                <span id="wish-char-count">0</span>/120
+            </div>
+
+            <div style="display: flex; gap: 10px;">
+                <button class="btn-primary" id="btn-send-wish-balloon" style="flex: 1; padding: 12px 14px; font-size: 14px;">
+                    🎈 Thả bóng bay
+                </button>
+                <button class="btn-primary" id="btn-send-wish-mailbox" style="flex: 1; padding: 12px 14px; font-size: 14px; background: linear-gradient(135deg, #F5D061, #E5A93C); color: #613C00;">
+                    📮 Gửi hộp thư
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==========================================================================
+       MODAL 5: SỔ LƯU NIỆM SINH NHẬT CỦA TÔM (SCRAPBOOK)
+       ========================================================================== -->
+    <div class="modal-backdrop hidden" id="scrapbook-modal">
+        <div class="card-modal" style="max-width: 480px;">
+            <button class="btn-modal-close" data-close="scrapbook-modal">✕</button>
+            <div class="title-badge">📖 SỔ LƯU NIỆM SINH NHẬT 📖</div>
+            <h2 style="font-size: 20px; font-weight: 900; margin: 4px 0 12px 0;">Kỷ Niệm Thôi Nôi Bé Tôm</h2>
+
+            <div class="scrapbook-tabs">
+                <button class="scrapbook-tab-btn active" data-tab="tab-overview">Tổng quan</button>
+                <button class="scrapbook-tab-btn" data-tab="tab-wishes">Lời chúc (<span id="sb-wish-count">0</span>)</button>
+                <button class="scrapbook-tab-btn" data-tab="tab-gifts">Quà tặng (<span id="sb-gift-count">0</span>/6)</button>
+                <button class="scrapbook-tab-btn" data-tab="tab-settings">Cài đặt</button>
+            </div>
+
+            <div class="scrapbook-content" id="tab-overview">
+                <div style="background: white; border-radius: 14px; padding: 14px; margin-bottom: 10px;">
+                    <p><b>Khách danh dự:</b> <span id="sb-player-name">...</span></p>
+                    <p style="margin-top: 4px;"><b>Số lần dự tiệc:</b> <span id="sb-visit-count">1</span></p>
+                    <p style="margin-top: 4px;"><b>Kỷ lục hứng bóng bay:</b> <span id="sb-balloons-caught">0</span> quả 🎈</p>
+                    <p style="margin-top: 4px;"><b>Bánh kem sinh nhật:</b> <span id="sb-cake-style">Bánh 2 tầng vị Vani</span></p>
+                </div>
+                <div style="background: var(--baby-blue-light); border-radius: 14px; padding: 14px;">
+                    <p style="font-weight: 800; color: var(--baby-blue-deep); margin-bottom: 6px;">🏅 Hoạt động đã tham gia:</p>
+                    <ul id="sb-activities-checklist" style="list-style: none; padding-left: 0; line-height: 1.8;">
+                        <li>✔️ Thổi nến sinh nhật cùng Tôm</li>
+                        <li>✔️ Mở quà bí mật</li>
+                        <li>✔️ Hứng bóng bay vui nhộn</li>
+                        <li>✔️ Trang trí bánh sinh nhật</li>
+                        <li>✔️ Gửi lời chúc vào sổ lưu niệm</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="scrapbook-content" id="tab-wishes" style="display: none;">
+                <div id="sb-wishes-list">
+                    <p style="color: var(--sub-text); text-align: center; margin-top: 30px;">Chưa có lời chúc nào. Hãy gửi một lời chúc cho Tôm nhé!</p>
+                </div>
+            </div>
+
+            <div class="scrapbook-content" id="tab-gifts" style="display: none;">
+                <div id="sb-gifts-grid" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px;">
+                    <!-- Sẽ render động các hộp quà -->
+                </div>
+            </div>
+
+            <div class="scrapbook-content" id="tab-settings" style="display: none;">
+                <p style="color: var(--sub-text); margin-bottom: 16px;">Dữ liệu trò chơi và sổ lưu niệm được lưu an toàn trực tiếp trên trình duyệt của bạn (localStorage).</p>
+                <button class="btn-secondary" id="btn-reset-storage" style="color: #D63031; border-color: #FF7675; width: 100%;">
+                    🗑️ Xóa dữ liệu lưu trên thiết bị này
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==========================================================================
+       MODAL 6: XUẤT ẢNH DỌC 1080x1350 KỶ NIỆM (SHARE IMAGE GENERATOR)
+       ========================================================================== -->
+    <div class="modal-backdrop hidden" id="share-modal">
+        <div class="card-modal" style="max-width: 440px;">
+            <button class="btn-modal-close" data-close="share-modal">✕</button>
+            <div class="title-badge">📸 KỶ NIỆM SINH NHẬT DIỆU KỲ 📸</div>
+            <h3 style="font-size: 19px; font-weight: 900; margin: 4px 0 10px 0;">Ảnh Thiệp Kỷ Niệm 1 Tuổi</h3>
+            
+            <img id="share-canvas-preview" alt="Ảnh kỷ niệm cùng Tôm" src="">
+
+            <div style="display: flex; gap: 10px; margin-top: 8px;">
+                <button class="btn-secondary" id="btn-download-poster" style="flex: 1;">
+                    💾 Tải ảnh PNG
+                </button>
+                <button class="btn-primary" id="btn-native-share" style="flex: 1; padding: 12px 14px; font-size: 14px;">
+                    📲 Chia sẻ ngay
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==========================================================================
+       MODAL 7: SỰ KIỆN ĐẶC BIỆT "KHOẢNH KHẮC SINH NHẬT" (GRAND BIRTHDAY MOMENT)
+       ========================================================================== -->
+    <div class="modal-backdrop hidden" id="moment-modal">
+        <div class="card-modal" style="background: linear-gradient(180deg, #FFFDF0 0%, #FFF4D0 100%); border-color: var(--champagne-gold);">
+            <div class="title-badge">🌟 ĐẠI TIỆC SINH NHẬT TÔM 🌟</div>
+            <div style="font-size: 64px; margin: 10px 0;">🎂🧸🎉</div>
+            <h2 style="font-size: 24px; font-weight: 900; color: #7A4B00;">CHÚC MỪNG SINH NHẬT BÉ TÔM!</h2>
+            <p style="font-size: 15px; font-weight: 700; color: #9E6B47; margin: 12px 0; line-height: 1.6;">
+                Hôm nay là ngày đặc biệt nhất! Tất cả mọi người cùng quây quần bên bé Tôm, vỗ tay và hát khúc ca chúc mừng sinh nhật diệu kỳ!
+            </p>
+            <button class="btn-primary" id="btn-moment-close" style="background: linear-gradient(135deg, #F5D061, #E5A93C); color: #613C00;">
+                Hoan Hô Bé Tôm! 🎈👏
+            </button>
+        </div>
+    </div>
+
+    <!-- ==========================================================================
+       JAVASCRIPT LOGIC CHÍNH - 20 KHỐI THEO YÊU CẦU ĐẶC TẢ
+       ========================================================================== -->
+    <script type="module">
+        import * as THREE from 'three';
+
+        /* ==========================================================================
+           1. CONFIGURATION VÀ CONSTANTS
+           ========================================================================== */
+        const CONFIG = {
+            BOY_NAME: 'Phạm Hoàng Minh Trí',
+            NICKNAME: 'Tom',
+            BIRTHDATE_STR: '13/11/2025',
+            STORAGE_KEY: 'toms_magical_birthday_save_v2',
+            MAX_PIXEL_RATIO: 2,
+            CAMERA_FOV: 60,
+            CAMERA_NEAR: 0.1,
+            CAMERA_FAR: 250,
+            INITIAL_GUEST_COUNT: 38,
+            MAX_GUEST_COUNT: 60,
+            SPAWN_ARRIVAL_INTERVAL: 40000, // 40 giây có một đợt khách mới đến
+            BALLOON_GAME_DURATION: 30, // 30s mini-game hứng bóng
+            GRAVITY: 9.8,
+            WORLD_BOUNDS: { minX: -26, maxX: 26, minZ: -24, maxZ: 32 }
+        };
+
+        // Từ ngữ tục tĩu cần lọc đơn giản
+        const PROFANITY_WORDS = ['dm', 'dcm', 'vl', 'cl', 'lon', 'cac', 'cc', 'fuck', 'shit', 'chot', 'chet', 'ngu', 'cho', 'dien'];
+
+        // Hệ thống Toast thông báo không làm gián đoạn trò chơi
+        function showToast(message) {
+            const toast = document.getElementById('game-toast');
+            if (!toast) return;
+            toast.textContent = message;
+            toast.classList.remove('hidden');
+            clearTimeout(toast.__timer);
+            toast.__timer = setTimeout(() => {
+                toast.classList.add('hidden');
+            }, 3200);
+        }
+        window.showToast = showToast;
+
+        /* ==========================================================================
+           16. LOCAL STORAGE MANAGER
+           ========================================================================== */
+        const StorageManager = {
+            data: {
+                playerName: 'Khách Quý',
+                outfitColor: '#89CFF0',
+                visitsCount: 1,
+                openedGifts: [],
+                balloonsCaughtRecord: 0,
+                wishesList: [],
+                cakeConfig: {
+                    tiers: 2,
+                    flavorColor: '#FFFBEA',
+                    topping: 'strawberries',
+                    text: 'TOM TRÒN 1 TUỔI'
+                },
+                completedActivities: {
+                    candles: false,
+                    gifts: false,
+                    balloons: false,
+                    cake: false,
+                    wish: false,
+                    moment: false
+                }
+            },
+
+            load() {
+                try {
+                    const raw = localStorage.getItem(CONFIG.STORAGE_KEY);
+                    if (raw) {
+                        const parsed = JSON.parse(raw);
+                        this.data = { ...this.data, ...parsed };
+                        this.data.visitsCount = (this.data.visitsCount || 1) + 1;
+                    }
+                    this.save();
+                } catch (e) {
+                    console.warn('LocalStorage error:', e);
+                }
+                return this.data;
+            },
+
+            save() {
+                try {
+                    localStorage.setItem(CONFIG.STORAGE_KEY, JSON.stringify(this.data));
+                } catch (e) {
+                    console.warn('LocalStorage save error:', e);
+                }
+            },
+
+            reset() {
+                try {
+                    localStorage.removeItem(CONFIG.STORAGE_KEY);
+                    location.reload();
+                } catch (e) {
+                    console.warn(e);
+                }
+            }
+        };
+
+        StorageManager.load();
+
+        /* ==========================================================================
+           15. AUDIO ENGINE (HOÀN TOÀN TỰ TẠO QUA WEB AUDIO API - ZERO EXTERNAL ASSETS)
+           ========================================================================== */
+        class BirthdayAudioEngine {
+            constructor() {
+                this.ctx = null;
+                this.masterGain = null;
+                this.bgmGain = null;
+                this.sfxGain = null;
+                this.isMuted = false;
+                this.bgmPlaying = false;
+                this.bgmInterval = null;
+                this.bgmStep = 0;
+            }
+
+            init() {
+                if (this.ctx) return;
+                const AudioCtx = window.AudioContext || window.webkitAudioContext;
+                if (!AudioCtx) return;
+                this.ctx = new AudioCtx();
+
+                this.masterGain = this.ctx.createGain();
+                this.masterGain.gain.setValueAtTime(0.8, this.ctx.currentTime);
+                this.masterGain.connect(this.ctx.destination);
+
+                this.bgmGain = this.ctx.createGain();
+                this.bgmGain.gain.setValueAtTime(0.25, this.ctx.currentTime);
+                this.bgmGain.connect(this.masterGain);
+
+                this.sfxGain = this.ctx.createGain();
+                this.sfxGain.gain.setValueAtTime(0.6, this.ctx.currentTime);
+                this.sfxGain.connect(this.masterGain);
+
+                if (this.ctx.state === 'suspended') {
+                    this.ctx.resume();
+                }
+            }
+
+            toggleMute() {
+                this.isMuted = !this.isMuted;
+                if (this.masterGain) {
+                    this.masterGain.gain.setValueAtTime(this.isMuted ? 0 : 0.8, this.ctx.currentTime);
+                }
+                return this.isMuted;
+            }
+
+            playTone(freq, type = 'sine', duration = 0.2, gainNode = this.sfxGain, gainVal = 0.3) {
+                if (!this.ctx || this.isMuted) return;
+                try {
+                    const osc = this.ctx.createOscillator();
+                    const g = this.ctx.createGain();
+                    osc.type = type;
+                    osc.frequency.setValueAtTime(freq, this.ctx.currentTime);
+
+                    g.gain.setValueAtTime(gainVal, this.ctx.currentTime);
+                    g.gain.exponentialRampToValueAtTime(0.0001, this.ctx.currentTime + duration);
+
+                    osc.connect(g);
+                    g.connect(gainNode);
+                    osc.start();
+                    osc.stop(this.ctx.currentTime + duration);
+                } catch (e) {}
+            }
+
+            // Giai điệu nhạc nền vui nhộn ấm áp (Pentatonic loop mô phỏng music box / mộc cầm)
+            startBgm() {
+                if (this.bgmPlaying || !this.ctx) return;
+                this.bgmPlaying = true;
+                const melody = [
+                    523.25, 587.33, 659.25, 783.99, 659.25, 587.33, 523.25, 392.00,
+                    440.00, 523.25, 659.25, 587.33, 523.25, 659.25, 783.99, 1046.50,
+                    880.00, 783.99, 659.25, 587.33, 523.25, 440.00, 392.00, 523.25,
+                    587.33, 659.25, 783.99, 880.00, 783.99, 659.25, 587.33, 523.25
+                ];
+                const bass = [261.63, 196.00, 220.00, 174.61];
+
+                this.bgmStep = 0;
+                this.bgmInterval = setInterval(() => {
+                    if (this.isMuted) return;
+                    const note = melody[this.bgmStep % melody.length];
+                    this.playTone(note, 'triangle', 0.22, this.bgmGain, 0.15);
+
+                    if (this.bgmStep % 4 === 0) {
+                        const bNote = bass[(this.bgmStep / 4) % bass.length];
+                        this.playTone(bNote, 'sine', 0.6, this.bgmGain, 0.2);
+                    }
+                    this.bgmStep++;
+                }, 240);
+            }
+
+            stopBgm() {
+                this.bgmPlaying = false;
+                if (this.bgmInterval) {
+                    clearInterval(this.bgmInterval);
+                    this.bgmInterval = null;
+                }
+            }
+
+            // Bài hát Happy Birthday tự tổng hợp bằng mã nốt
+            playHappyBirthdayTune() {
+                if (!this.ctx || this.isMuted) return;
+                // Nốt: C4, C4, D4, C4, F4, E4 | C4, C4, D4, C4, G4, F4 | C4, C4, C5, A4, F4, E4, D4 | Bb4, Bb4, A4, F4, G4, F4
+                const notes = [
+                    { f: 261.63, d: 0.35, p: 0.0 },
+                    { f: 261.63, d: 0.2, p: 0.4 },
+                    { f: 293.66, d: 0.5, p: 0.65 },
+                    { f: 261.63, d: 0.5, p: 1.2 },
+                    { f: 349.23, d: 0.5, p: 1.75 },
+                    { f: 329.63, d: 0.9, p: 2.3 },
+
+                    { f: 261.63, d: 0.35, p: 3.4 },
+                    { f: 261.63, d: 0.2, p: 3.8 },
+                    { f: 293.66, d: 0.5, p: 4.05 },
+                    { f: 261.63, d: 0.5, p: 4.6 },
+                    { f: 392.00, d: 0.5, p: 5.15 },
+                    { f: 349.23, d: 0.9, p: 5.7 },
+
+                    { f: 261.63, d: 0.35, p: 6.8 },
+                    { f: 261.63, d: 0.2, p: 7.2 },
+                    { f: 523.25, d: 0.5, p: 7.45 },
+                    { f: 440.00, d: 0.5, p: 8.0 },
+                    { f: 349.23, d: 0.5, p: 8.55 },
+                    { f: 329.63, d: 0.5, p: 9.1 },
+                    { f: 293.66, d: 0.8, p: 9.65 },
+
+                    { f: 466.16, d: 0.35, p: 10.7 },
+                    { f: 466.16, d: 0.2, p: 11.1 },
+                    { f: 440.00, d: 0.5, p: 11.35 },
+                    { f: 349.23, d: 0.5, p: 11.9 },
+                    { f: 392.00, d: 0.5, p: 12.45 },
+                    { f: 349.23, d: 1.2, p: 13.0 }
+                ];
+
+                const now = this.ctx.currentTime;
+                notes.forEach(n => {
+                    setTimeout(() => {
+                        this.playTone(n.f, 'sine', n.d, this.sfxGain, 0.4);
+                        this.playTone(n.f * 2, 'triangle', n.d * 0.7, this.sfxGain, 0.15); // Hài âm chuông lấp lánh
+                    }, n.p * 1000);
+                });
+            }
+
+            // Hiệu ứng âm thanh SFX
+            playSfx(type) {
+                if (!this.ctx || this.isMuted) return;
+                switch (type) {
+                    case 'pop':
+                        this.playTone(600, 'sine', 0.08, this.sfxGain, 0.4);
+                        this.playTone(850, 'triangle', 0.06, this.sfxGain, 0.3);
+                        break;
+                    case 'chime':
+                        this.playTone(523.25, 'triangle', 0.2, this.sfxGain, 0.3);
+                        setTimeout(() => this.playTone(659.25, 'triangle', 0.2, this.sfxGain, 0.3), 80);
+                        setTimeout(() => this.playTone(783.99, 'triangle', 0.3, this.sfxGain, 0.3), 160);
+                        break;
+                    case 'blow':
+                        // Tiếng thổi phù phù
+                        try {
+                            const bufferSize = this.ctx.sampleRate * 0.3;
+                            const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
+                            const data = buffer.getChannelData(0);
+                            for (let i = 0; i < bufferSize; i++) {
+                                data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (bufferSize * 0.3));
+                            }
+                            const noise = this.ctx.createBufferSource();
+                            noise.buffer = buffer;
+                            const filter = this.ctx.createBiquadFilter();
+                            filter.type = 'lowpass';
+                            filter.frequency.setValueAtTime(400, this.ctx.currentTime);
+                            const gain = this.ctx.createGain();
+                            gain.gain.setValueAtTime(0.5, this.ctx.currentTime);
+                            noise.connect(filter);
+                            filter.connect(gain);
+                            gain.connect(this.sfxGain);
+                            noise.start();
+                        } catch (e) {}
+                        break;
+                    case 'confetti':
+                        this.playTone(200, 'sine', 0.15, this.sfxGain, 0.5);
+                        setTimeout(() => this.playSfx('chime'), 60);
+                        break;
+                    case 'applause':
+                        // Tiếng vỗ tay rộn ràng
+                        for (let i = 0; i < 18; i++) {
+                            setTimeout(() => {
+                                this.playTone(300 + Math.random() * 400, 'sine', 0.05, this.sfxGain, 0.15);
+                            }, Math.random() * 1200);
+                        }
+                        break;
+                    case 'footstep':
+                        this.playTone(140 + Math.random() * 20, 'sine', 0.04, this.sfxGain, 0.08);
+                        break;
+                }
+            }
+        }
+
+        const audio = new BirthdayAudioEngine();
+
+        /* ==========================================================================
+           3. THREE.JS INITIALIZATION
+           ========================================================================== */
+        const container = document.getElementById('canvas-container');
+        const scene = new THREE.Scene();
+        scene.background = new THREE.Color(0xA0D2EB);
+        scene.fog = new THREE.FogExp2(0xA0D2EB, 0.015);
+
+        const camera = new THREE.PerspectiveCamera(CONFIG.CAMERA_FOV, window.innerWidth / window.innerHeight, CONFIG.CAMERA_NEAR, CONFIG.CAMERA_FAR);
+        camera.position.set(0, 5, 20);
+
+        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false, powerPreference: 'high-performance' });
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, CONFIG.MAX_PIXEL_RATIO));
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.shadowMap.enabled = true;
+        renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+        container.appendChild(renderer.domElement);
+
+        // Ánh sáng môi trường và mặt trời mềm mại
+        const ambientLight = new THREE.AmbientLight(0xFFF9E6, 0.85);
+        scene.add(ambientLight);
+
+        const dirLight = new THREE.DirectionalLight(0xFFF0D0, 1.2);
+        dirLight.position.set(25, 40, 20);
+        dirLight.castShadow = true;
+        dirLight.shadow.mapSize.width = 1024;
+        dirLight.shadow.mapSize.height = 1024;
+        dirLight.shadow.camera.near = 0.5;
+        dirLight.shadow.camera.far = 120;
+        const d = 35;
+        dirLight.shadow.camera.left = -d;
+        dirLight.shadow.camera.right = d;
+        dirLight.shadow.camera.top = d;
+        dirLight.shadow.camera.bottom = -d;
+        scene.add(dirLight);
+
+        // Đèn sân khấu chuyển động nhẹ
+        const stageSpotLight1 = new THREE.SpotLight(0xF5D061, 2.5, 30, Math.PI / 5, 0.4);
+        stageSpotLight1.position.set(-6, 12, -10);
+        stageSpotLight1.target.position.set(0, 2, -14);
+        scene.add(stageSpotLight1);
+        scene.add(stageSpotLight1.target);
+
+        const stageSpotLight2 = new THREE.SpotLight(0xFF9FF3, 2.0, 30, Math.PI / 5, 0.4);
+        stageSpotLight2.position.set(6, 12, -10);
+        stageSpotLight2.target.position.set(0, 2, -14);
+        scene.add(stageSpotLight2);
+        scene.add(stageSpotLight2.target);
+
+        /* ==========================================================================
+           TẠO PROCEDURAL TEXTURES BẰNG CANVAS (ZERO ASSET FILES)
+           ========================================================================== */
+        function createChibiFaceTexture(blushColor = '#FFAAA6', smileStyle = 'happy') {
+            const canvas = document.createElement('canvas');
+            canvas.width = 512;
+            canvas.height = 512;
+            const ctx = canvas.getContext('2d');
+
+            ctx.fillStyle = '#FFE0BD';
+            ctx.fillRect(0, 0, 512, 512);
+
+            const centerX = 256;
+            const eyeY = 240;
+            const eyeSpacing = 44;
+            const eyeRadius = 18;
+
+            // Mắt trái chibi
+            ctx.fillStyle = '#1E293B';
+            ctx.beginPath();
+            ctx.arc(centerX - eyeSpacing, eyeY, eyeRadius, 0, Math.PI * 2);
+            ctx.fill();
+            // Đốm sáng long lanh mắt trái
+            ctx.fillStyle = '#FFFFFF';
+            ctx.beginPath();
+            ctx.arc(centerX - eyeSpacing - 5, eyeY - 5, 7, 0, Math.PI * 2);
+            ctx.arc(centerX - eyeSpacing + 6, eyeY + 5, 3.5, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Mắt phải chibi
+            ctx.fillStyle = '#1E293B';
+            ctx.beginPath();
+            ctx.arc(centerX + eyeSpacing, eyeY, eyeRadius, 0, Math.PI * 2);
+            ctx.fill();
+            // Đốm sáng long lanh mắt phải
+            ctx.fillStyle = '#FFFFFF';
+            ctx.beginPath();
+            ctx.arc(centerX + eyeSpacing - 5, eyeY - 5, 7, 0, Math.PI * 2);
+            ctx.arc(centerX + eyeSpacing + 6, eyeY + 5, 3.5, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Má hồng phúng phính đáng yêu
+            ctx.fillStyle = blushColor;
+            ctx.beginPath();
+            ctx.ellipse(centerX - eyeSpacing - 16, eyeY + 30, 18, 10, 0, 0, Math.PI * 2);
+            ctx.ellipse(centerX + eyeSpacing + 16, eyeY + 30, 18, 10, 0, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Lông mày bé xíu
+            ctx.strokeStyle = '#8D6E63';
+            ctx.lineWidth = 3;
+            ctx.lineCap = 'round';
+            ctx.beginPath();
+            ctx.arc(centerX - eyeSpacing, eyeY - 24, 14, 1.2 * Math.PI, 1.8 * Math.PI);
+            ctx.stroke();
+            ctx.beginPath();
+            ctx.arc(centerX + eyeSpacing, eyeY - 24, 14, 1.2 * Math.PI, 1.8 * Math.PI);
+            ctx.stroke();
+
+            // Miệng cười
+            ctx.strokeStyle = '#D63031';
+            ctx.lineWidth = 4;
+            ctx.lineCap = 'round';
+            ctx.beginPath();
+            if (smileStyle === 'open') {
+                ctx.fillStyle = '#E17055';
+                ctx.arc(centerX, eyeY + 36, 16, 0, Math.PI);
+                ctx.fill();
+                ctx.stroke();
+            } else {
+                ctx.arc(centerX, eyeY + 34, 14, 0.1 * Math.PI, 0.9 * Math.PI);
+                ctx.stroke();
+            }
+
+            const texture = new THREE.CanvasTexture(canvas);
+            texture.needsUpdate = true;
+            return texture;
+        }
+
+        // Texture thảm đỏ viền vàng
+        function createCarpetTexture() {
+            const canvas = document.createElement('canvas');
+            canvas.width = 512;
+            canvas.height = 512;
+            const ctx = canvas.getContext('2d');
+            ctx.fillStyle = '#C0392B';
+            ctx.fillRect(0, 0, 512, 512);
+
+            // Viền vàng champagne hoa văn
+            ctx.strokeStyle = '#F5D061';
+            ctx.lineWidth = 24;
+            ctx.strokeRect(20, 20, 472, 472);
+
+            ctx.fillStyle = '#F5D061';
+            for (let i = 40; i < 480; i += 60) {
+                ctx.beginPath();
+                ctx.arc(i, 40, 8, 0, Math.PI * 2);
+                ctx.arc(i, 472, 8, 0, Math.PI * 2);
+                ctx.fill();
+            }
+
+            const texture = new THREE.CanvasTexture(canvas);
+            texture.wrapS = THREE.RepeatWrapping;
+            texture.wrapT = THREE.RepeatWrapping;
+            texture.repeat.set(1, 4);
+            return texture;
+        }
+
+        // Texture cỏ hoa viên pastel
+        function createGrassTexture() {
+            const canvas = document.createElement('canvas');
+            canvas.width = 512;
+            canvas.height = 512;
+            const ctx = canvas.getContext('2d');
+            ctx.fillStyle = '#9BD790';
+            ctx.fillRect(0, 0, 512, 512);
+
+            // Chấm cỏ nhẹ nhàng
+            for (let i = 0; i < 400; i++) {
+                ctx.fillStyle = Math.random() > 0.5 ? '#8AC97F' : '#AEE2A4';
+                ctx.beginPath();
+                ctx.arc(Math.random() * 512, Math.random() * 512, 3 + Math.random() * 4, 0, Math.PI * 2);
+                ctx.fill();
+            }
+            // Điểm xuyết hoa cúc nhỏ
+            for (let i = 0; i < 80; i++) {
+                const hx = Math.random() * 512;
+                const hy = Math.random() * 512;
+                ctx.fillStyle = '#FFFFFF';
+                ctx.beginPath();
+                ctx.arc(hx, hy, 4, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.fillStyle = '#F5D061';
+                ctx.beginPath();
+                ctx.arc(hx, hy, 2, 0, Math.PI * 2);
+                ctx.fill();
+            }
+
+            const texture = new THREE.CanvasTexture(canvas);
+            texture.wrapS = THREE.RepeatWrapping;
+            texture.wrapT = THREE.RepeatWrapping;
+            texture.repeat.set(8, 8);
+            return texture;
+        }
+
+        /* ==========================================================================
+           4. BỐI CẢNH THẾ GIỚI 3D (6 KHU VỰC CHÍNH VÀ VẬT THỂ)
+           ========================================================================== */
+        const World = {
+            colliders: [],
+            decorations: [],
+            balloons: [],
+            giftBoxes: [],
+            interactiveObjects: [],
+            cakeMeshGroup: null,
+
+            build() {
+                // Sàn cỏ rộng
+                const grassGeo = new THREE.PlaneGeometry(80, 80);
+                const grassMat = new THREE.MeshLambertMaterial({ map: createGrassTexture() });
+                const grass = new THREE.Mesh(grassGeo, grassMat);
+                grass.rotation.x = -Math.PI / 2;
+                grass.receiveShadow = true;
+                scene.add(grass);
+
+                // Hàng rào gỗ pastel bao quanh
+                this.buildFence();
+
+                // 1. CỔNG CHÀO SINH NHẬT (Z = 24 đến 28)
+                this.buildEntranceGate();
+
+                // 2. SÂN TIỆC (BÀN BÁNH, ĐÈN DÂY, GẤU TEDDY KHỔNG LỒ)
+                this.buildPartyCourtyard();
+
+                // 3. SÂN KHẤU SINH NHẬT (STAGE, CHỮ TOM, BÁNH KEM CHÍNH)
+                this.buildBirthdayStage();
+
+                // 4. KHU VUI CHƠI (NHÀ BÓNG, CẦU TRƯỢT, BẬP BÊNH, KHỐI XẾP HÌNH)
+                this.buildPlayground();
+
+                // 5. KHU CHỤP ẢNH (KHUNG ẢNH, CHỮ ONE, TEDDY)
+                this.buildPhotoZone();
+
+                // 6. KHU BÀN QUÀ (CÁC HỘP QUÀ CÓ THỂ MỞ)
+                this.buildGiftZone();
+
+                // HIỆU ỨNG MÔI TRƯỜNG (BÓNG BAY LƠ LỬNG, CONFETTI, SAO SÁNG)
+                this.buildEnvironmentEffects();
+            },
+
+            buildFence() {
+                const postMat = new THREE.MeshLambertMaterial({ color: 0xFFF5E4 });
+                const railMat = new THREE.MeshLambertMaterial({ color: 0xFFE3D0 });
+                const b = CONFIG.WORLD_BOUNDS;
+
+                // Cọc hàng rào 4 phía
+                for (let x = b.minX; x <= b.maxX; x += 3) {
+                    this.createPicket(x, b.minZ, postMat);
+                    if (Math.abs(x) > 4) { // Chừa lối cổng chào ở minZ/maxZ
+                        this.createPicket(x, b.maxZ, postMat);
+                    }
+                }
+                for (let z = b.minZ; z <= b.maxZ; z += 3) {
+                    this.createPicket(b.minX, z, postMat);
+                    this.createPicket(b.maxX, z, postMat);
+                }
+            },
+
+            createPicket(x, z, mat) {
+                const geo = new THREE.BoxGeometry(0.3, 1.4, 0.3);
+                const m = new THREE.Mesh(geo, mat);
+                m.position.set(x, 0.7, z);
+                m.castShadow = true;
+                scene.add(m);
+                this.colliders.push({ x, z, r: 0.5 });
+            },
+
+            // 1. Cổng chào sinh nhật
+            buildEntranceGate() {
+                const gateGroup = new THREE.Group();
+                gateGroup.position.set(0, 0, 24);
+
+                // Cổng vòm pastel cầu vồng
+                const archMat = new THREE.MeshLambertMaterial({ color: 0x89CFF0 });
+                const torusGeo = new THREE.TorusGeometry(3.8, 0.45, 12, 32, Math.PI);
+                const arch = new THREE.Mesh(torusGeo, archMat);
+                arch.position.y = 3.8;
+                gateGroup.add(arch);
+
+                // 2 Cột bóng bay xoắn ốc
+                const colors = [0xFFD1DC, 0x89CFF0, 0xF5D061, 0xFFFFFF];
+                [-3.8, 3.8].forEach(xOffset => {
+                    for (let y = 0.5; y <= 3.8; y += 0.5) {
+                        const bGeo = new THREE.SphereGeometry(0.35, 12, 12);
+                        const bMat = new THREE.MeshLambertMaterial({ color: colors[Math.floor(y * 2) % colors.length] });
+                        const b = new THREE.Mesh(bGeo, bMat);
+                        b.position.set(xOffset + Math.sin(y * 3) * 0.15, y, Math.cos(y * 3) * 0.15);
+                        gateGroup.add(b);
+                    }
+                    this.colliders.push({ x: xOffset, z: 24, r: 0.9 });
+                });
+
+                // Chữ nổi trên cổng: HAPPY BIRTHDAY TOM (canvas texture trên biển hiệu)
+                const bannerCanvas = document.createElement('canvas');
+                bannerCanvas.width = 512;
+                bannerCanvas.height = 128;
+                const bCtx = bannerCanvas.getContext('2d');
+                bCtx.fillStyle = '#FFFDD0';
+                bCtx.roundRect(10, 10, 492, 108, 24);
+                bCtx.fill();
+                bCtx.strokeStyle = '#F5D061';
+                bCtx.lineWidth = 8;
+                bCtx.stroke();
+                bCtx.fillStyle = '#4A90E2';
+                bCtx.font = 'bold 32px Nunito, sans-serif';
+                bCtx.textAlign = 'center';
+                bCtx.fillText('HAPPY BIRTHDAY TOM', 256, 72);
+
+                const bannerTex = new THREE.CanvasTexture(bannerCanvas);
+                const bannerGeo = new THREE.PlaneGeometry(5.2, 1.3);
+                const bannerMat = new THREE.MeshBasicMaterial({ map: bannerTex, transparent: true });
+                const bannerMesh = new THREE.Mesh(bannerGeo, bannerMat);
+                bannerMesh.position.set(0, 4.4, 0.1);
+                gateGroup.add(bannerMesh);
+
+                // Thảm đỏ dẫn từ cổng vào sân tiệc
+                const carpetGeo = new THREE.PlaneGeometry(3.6, 26);
+                const carpetMat = new THREE.MeshLambertMaterial({ map: createCarpetTexture() });
+                const carpet = new THREE.Mesh(carpetGeo, carpetMat);
+                carpet.rotation.x = -Math.PI / 2;
+                carpet.position.set(0, 0.02, 11);
+                carpet.receiveShadow = true;
+                scene.add(carpet);
+
+                scene.add(gateGroup);
+            },
+
+            // 2. Sân tiệc sinh nhật & Gấu Teddy khổng lồ
+            buildPartyCourtyard() {
+                // Bàn tiệc tròn với khăn trải bàn pastel
+                const tableMat = new THREE.MeshLambertMaterial({ color: 0xFFFFFF });
+                const tableGeo = new THREE.CylinderGeometry(1.8, 1.8, 0.8, 24);
+                const table = new THREE.Mesh(tableGeo, tableMat);
+                table.position.set(-6, 0.4, 8);
+                table.castShadow = true;
+                table.receiveShadow = true;
+                scene.add(table);
+                this.colliders.push({ x: -6, z: 8, r: 2.1 });
+
+                // Bàn tiệc thứ hai
+                const table2 = table.clone();
+                table2.position.set(6, 0.4, 8);
+                scene.add(table2);
+                this.colliders.push({ x: 6, z: 8, r: 2.1 });
+
+                // Cốc chén, dĩa bánh trên bàn
+                [-6, 6].forEach(tx => {
+                    for (let a = 0; a < Math.PI * 2; a += Math.PI / 3) {
+                        const plate = new THREE.Mesh(
+                            new THREE.CylinderGeometry(0.3, 0.3, 0.05, 12),
+                            new THREE.MeshLambertMaterial({ color: 0xFFD1DC })
+                        );
+                        plate.position.set(tx + Math.cos(a) * 1.2, 0.83, 8 + Math.sin(a) * 1.2);
+                        scene.add(plate);
+                    }
+                });
+
+                // GẤU TEDDY KHỔNG LỒ (Landmark chụp ảnh đáng yêu cao 3.8m)
+                this.buildGiantTeddy(-11, 0, 7);
+
+                // Đèn dây lung linh trên cao (Fairy light garland)
+                this.buildFairyLights();
+            },
+
+            buildGiantTeddy(x, y, z) {
+                const teddyGroup = new THREE.Group();
+                teddyGroup.position.set(x, y, z);
+                teddyGroup.rotation.y = Math.PI / 4;
+
+                const furMat = new THREE.MeshLambertMaterial({ color: 0xC68B59 });
+                const bellyMat = new THREE.MeshLambertMaterial({ color: 0xF5E6D3 });
+
+                // Thân gấu
+                const body = new THREE.Mesh(new THREE.SphereGeometry(1.4, 16, 16), furMat);
+                body.position.y = 1.3;
+                body.scale.set(1, 1.1, 0.9);
+                body.castShadow = true;
+                teddyGroup.add(body);
+
+                // Bụng tròn sáng màu
+                const belly = new THREE.Mesh(new THREE.SphereGeometry(0.9, 16, 16), bellyMat);
+                belly.position.set(0, 1.3, 0.55);
+                belly.scale.set(0.9, 1, 0.4);
+                teddyGroup.add(belly);
+
+                // Đầu gấu
+                const head = new THREE.Mesh(new THREE.SphereGeometry(1.1, 16, 16), furMat);
+                head.position.y = 2.7;
+                head.castShadow = true;
+                teddyGroup.add(head);
+
+                // 2 Tai gấu
+                [-0.8, 0.8].forEach(ex => {
+                    const ear = new THREE.Mesh(new THREE.SphereGeometry(0.4, 12, 12), furMat);
+                    ear.position.set(ex, 3.5, 0);
+                    teddyGroup.add(ear);
+                });
+
+                // Mõm gấu
+                const muzzle = new THREE.Mesh(new THREE.SphereGeometry(0.45, 14, 14), bellyMat);
+                muzzle.position.set(0, 2.5, 0.9);
+                teddyGroup.add(muzzle);
+
+                // Mũi & Mắt
+                const nose = new THREE.Mesh(new THREE.SphereGeometry(0.12, 8, 8), new THREE.MeshBasicMaterial({ color: 0x2C3E50 }));
+                nose.position.set(0, 2.65, 1.3);
+                teddyGroup.add(nose);
+
+                [-0.35, 0.35].forEach(eyeX => {
+                    const eye = new THREE.Mesh(new THREE.SphereGeometry(0.1, 8, 8), new THREE.MeshBasicMaterial({ color: 0x1A1A1A }));
+                    eye.position.set(eyeX, 2.8, 0.95);
+                    teddyGroup.add(eye);
+                });
+
+                // Trái tim to ghi "TOM 1 TUỔI" ôm trước ngực
+                const heartCanvas = document.createElement('canvas');
+                heartCanvas.width = 256;
+                heartCanvas.height = 256;
+                const hCtx = heartCanvas.getContext('2d');
+                hCtx.fillStyle = '#FF6B6B';
+                hCtx.beginPath();
+                hCtx.moveTo(128, 60);
+                hCtx.bezierCurveTo(128, 30, 80, 20, 50, 60);
+                hCtx.bezierCurveTo(10, 120, 80, 170, 128, 220);
+                hCtx.bezierCurveTo(176, 170, 246, 120, 206, 60);
+                hCtx.bezierCurveTo(176, 20, 128, 30, 128, 60);
+                hCtx.fill();
+                hCtx.fillStyle = '#FFFFFF';
+                hCtx.font = 'bold 28px Nunito, sans-serif';
+                hCtx.textAlign = 'center';
+                hCtx.fillText('TOM 1 TUỔI', 128, 115);
+                hCtx.font = 'bold 20px Nunito, sans-serif';
+                hCtx.fillText('13/11/2025', 128, 145);
+
+                const heartTex = new THREE.CanvasTexture(heartCanvas);
+                const heartMesh = new THREE.Mesh(
+                    new THREE.PlaneGeometry(1.6, 1.6),
+                    new THREE.MeshBasicMaterial({ map: heartTex, transparent: true })
+                );
+                heartMesh.position.set(0, 1.4, 0.95);
+                teddyGroup.add(heartMesh);
+
+                scene.add(teddyGroup);
+                this.colliders.push({ x, z, r: 2.2 });
+            },
+
+            buildFairyLights() {
+                // Các trụ đèn và chuỗi bóng đèn lung linh
+                const lightPoints = [
+                    new THREE.Vector3(-14, 5, -5),
+                    new THREE.Vector3(-6, 4.5, 4),
+                    new THREE.Vector3(6, 4.5, 4),
+                    new THREE.Vector3(14, 5, -5)
+                ];
+                const bulbColors = [0xF5D061, 0xFFD1DC, 0x89CFF0, 0xFFFFFF];
+
+                for (let i = 0; i < lightPoints.length - 1; i++) {
+                    const p1 = lightPoints[i];
+                    const p2 = lightPoints[i + 1];
+                    for (let t = 0; t <= 1; t += 0.15) {
+                        const pos = new THREE.Vector3().lerpVectors(p1, p2, t);
+                        pos.y -= Math.sin(t * Math.PI) * 0.8; // Độ võng dây đèn
+
+                        const bulb = new THREE.Mesh(
+                            new THREE.SphereGeometry(0.18, 8, 8),
+                            new THREE.MeshBasicMaterial({ color: bulbColors[Math.floor(Math.random() * bulbColors.length)] })
+                        );
+                        bulb.position.copy(pos);
+                        scene.add(bulb);
+                        this.decorations.push({ mesh: bulb, type: 'light', baseColor: bulb.material.color.clone() });
+                    }
+                }
+            },
+
+            // 3. Sân khấu sinh nhật chính (Center Stage)
+            buildBirthdayStage() {
+                const stageGroup = new THREE.Group();
+                stageGroup.position.set(0, 0, -13);
+
+                // Bục sân khấu hình tròn đường kính 13m cao 0.5m
+                const deckGeo = new THREE.CylinderGeometry(6.5, 6.8, 0.5, 32);
+                const deckMat = new THREE.MeshLambertMaterial({ color: 0xFFF5EB });
+                const deck = new THREE.Mesh(deckGeo, deckMat);
+                deck.position.y = 0.25;
+                deck.receiveShadow = true;
+                stageGroup.add(deck);
+
+                // Backdrop vòm tròn sân khấu
+                const backdropCanvas = document.createElement('canvas');
+                backdropCanvas.width = 512;
+                backdropCanvas.height = 256;
+                const bdCtx = backdropCanvas.getContext('2d');
+                bdCtx.fillStyle = '#E0F2FE';
+                bdCtx.fillRect(0, 0, 512, 256);
+                bdCtx.fillStyle = '#F5D061';
+                bdCtx.font = '900 68px Nunito, sans-serif';
+                bdCtx.textAlign = 'center';
+                bdCtx.fillText('★ TOM ★', 256, 110);
+                bdCtx.fillStyle = '#4A90E2';
+                bdCtx.font = 'bold 36px Nunito, sans-serif';
+                bdCtx.fillText('HAPPY 1st BIRTHDAY', 256, 170);
+
+                const bdTex = new THREE.CanvasTexture(backdropCanvas);
+                const bdGeo = new THREE.CylinderGeometry(6.2, 6.2, 4.5, 32, 1, true, -Math.PI / 3, (2 * Math.PI) / 3);
+                const bdMat = new THREE.MeshBasicMaterial({ map: bdTex, side: THREE.DoubleSide });
+                const bdMesh = new THREE.Mesh(bdGeo, bdMat);
+                bdMesh.position.set(0, 2.5, 0);
+                stageGroup.add(bdMesh);
+
+                // Bàn đặt bánh kem sinh nhật trung tâm
+                const cakeTable = new THREE.Mesh(
+                    new THREE.CylinderGeometry(1.4, 1.4, 0.8, 24),
+                    new THREE.MeshLambertMaterial({ color: 0xFFFDF0 })
+                );
+                cakeTable.position.set(0, 0.9, -1);
+                cakeTable.castShadow = true;
+                stageGroup.add(cakeTable);
+
+                // Tạo bánh sinh nhật 3D tùy biến
+                this.buildCake(stageGroup);
+
+                // Ghế danh dự bé Tôm và gia đình
+                const chairMat = new THREE.MeshLambertMaterial({ color: 0xC68B59 });
+                const chair1 = new THREE.Mesh(new THREE.BoxGeometry(0.9, 0.7, 0.9), chairMat);
+                chair1.position.set(-2.2, 0.6, -1);
+                stageGroup.add(chair1);
+
+                const chair2 = chair1.clone();
+                chair2.position.set(2.2, 0.6, -1);
+                stageGroup.add(chair2);
+
+                scene.add(stageGroup);
+
+                // Collider sân khấu
+                this.colliders.push({ x: 0, z: -14, r: 6.2 });
+
+                // Thêm điểm tương tác bánh kem
+                this.interactiveObjects.push({
+                    name: 'Bánh sinh nhật',
+                    pos: new THREE.Vector3(0, 1.2, -14),
+                    radius: 3.5,
+                    type: 'cake'
+                });
+            },
+
+            // Xây dựng bánh sinh nhật 3D theo cấu hình
+            buildCake(parentGroup) {
+                if (this.cakeMeshGroup) {
+                    parentGroup.remove(this.cakeMeshGroup);
+                }
+                const cakeConfig = StorageManager.data.cakeConfig;
+                const cakeGroup = new THREE.Group();
+                cakeGroup.position.set(0, 1.3, -1);
+
+                const baseMat = new THREE.MeshLambertMaterial({ color: cakeConfig.flavorColor || 0xFFFBEA });
+                const creamMat = new THREE.MeshLambertMaterial({ color: 0xFFFFFF });
+                const tiers = cakeConfig.tiers || 2;
+
+                // Tầng 1
+                const t1 = new THREE.Mesh(new THREE.CylinderGeometry(1.1, 1.1, 0.45, 24), baseMat);
+                t1.position.y = 0.225;
+                t1.castShadow = true;
+                cakeGroup.add(t1);
+
+                // Viền kem tầng 1
+                const rim1 = new THREE.Mesh(new THREE.TorusGeometry(1.1, 0.08, 8, 24), creamMat);
+                rim1.rotation.x = Math.PI / 2;
+                rim1.position.y = 0.45;
+                cakeGroup.add(rim1);
+
+                let topY = 0.45;
+
+                // Tầng 2
+                if (tiers >= 2) {
+                    const t2 = new THREE.Mesh(new THREE.CylinderGeometry(0.8, 0.8, 0.4, 24), baseMat);
+                    t2.position.y = topY + 0.2;
+                    t2.castShadow = true;
+                    cakeGroup.add(t2);
+
+                    const rim2 = new THREE.Mesh(new THREE.TorusGeometry(0.8, 0.06, 8, 24), creamMat);
+                    rim2.rotation.x = Math.PI / 2;
+                    rim2.position.y = topY + 0.4;
+                    cakeGroup.add(rim2);
+                    topY += 0.4;
+                }
+
+                // Tầng 3
+                if (tiers >= 3) {
+                    const t3 = new THREE.Mesh(new THREE.CylinderGeometry(0.55, 0.55, 0.35, 24), baseMat);
+                    t3.position.y = topY + 0.175;
+                    t3.castShadow = true;
+                    cakeGroup.add(t3);
+                    topY += 0.35;
+                }
+
+                // Nến sinh nhật phát sáng và ngọn lửa
+                this.candleFlames = [];
+                const candleMat = new THREE.MeshLambertMaterial({ color: 0x89CFF0 });
+                const flameMat = new THREE.MeshBasicMaterial({ color: 0xFF9F1A });
+
+                const candlePositions = tiers === 1 ? [[0, 0]] : [[-0.2, -0.1], [0.2, -0.1], [0, 0.2]];
+                candlePositions.forEach(([cx, cz]) => {
+                    const c = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.04, 0.3, 10), candleMat);
+                    c.position.set(cx, topY + 0.15, cz);
+                    cakeGroup.add(c);
+
+                    const flame = new THREE.Mesh(new THREE.ConeGeometry(0.05, 0.14, 8), flameMat);
+                    flame.position.set(cx, topY + 0.36, cz);
+                    cakeGroup.add(flame);
+                    this.candleFlames.push(flame);
+                });
+
+                // Topping trang trí
+                if (cakeConfig.topping === 'strawberries') {
+                    for (let a = 0; a < Math.PI * 2; a += Math.PI / 3) {
+                        const straw = new THREE.Mesh(
+                            new THREE.ConeGeometry(0.08, 0.16, 8),
+                            new THREE.MeshLambertMaterial({ color: 0xFF6B6B })
+                        );
+                        straw.position.set(Math.cos(a) * 0.95, 0.48, Math.sin(a) * 0.95);
+                        cakeGroup.add(straw);
+                    }
+                } else if (cakeConfig.topping === 'stars') {
+                    for (let a = 0; a < Math.PI * 2; a += Math.PI / 3) {
+                        const star = new THREE.Mesh(
+                            new THREE.OctahedronGeometry(0.09),
+                            new THREE.MeshLambertMaterial({ color: 0xF5D061 })
+                        );
+                        star.position.set(Math.cos(a) * 0.95, 0.5, Math.sin(a) * 0.95);
+                        cakeGroup.add(star);
+                    }
+                }
+
+                parentGroup.add(cakeGroup);
+                this.cakeMeshGroup = cakeGroup;
+            },
+
+            // 4. Khu vui chơi (Playground)
+            buildPlayground() {
+                const playGroup = new THREE.Group();
+                playGroup.position.set(-17, 0, -2);
+
+                // Nhà bóng (Ball Pit): bể gỗ lục giác chứa nhiều quả bóng pastel
+                const pitWallMat = new THREE.MeshLambertMaterial({ color: 0xFFE0BD });
+                const pitWall = new THREE.Mesh(new THREE.CylinderGeometry(3.2, 3.2, 0.8, 6, 1, true), pitWallMat);
+                pitWall.position.y = 0.4;
+                playGroup.add(pitWall);
+
+                // Các quả bóng tròn rực rỡ trong nhà bóng
+                const ballColors = [0xFFD1DC, 0x89CFF0, 0xF5D061, 0xC1F0D0, 0xE6E6FA];
+                for (let i = 0; i < 45; i++) {
+                    const r = Math.random() * 2.4;
+                    const a = Math.random() * Math.PI * 2;
+                    const bMesh = new THREE.Mesh(
+                        new THREE.SphereGeometry(0.22, 8, 8),
+                        new THREE.MeshLambertMaterial({ color: ballColors[i % ballColors.length] })
+                    );
+                    bMesh.position.set(Math.cos(a) * r, 0.2 + Math.random() * 0.4, Math.sin(a) * r);
+                    playGroup.add(bMesh);
+                }
+
+                // Cầu trượt pastel (Slide)
+                const slideGroup = new THREE.Group();
+                slideGroup.position.set(0, 0, 6);
+                const ladder = new THREE.Mesh(new THREE.BoxGeometry(0.8, 2.4, 0.2), new THREE.MeshLambertMaterial({ color: 0xF5D061 }));
+                ladder.position.set(0, 1.2, -1.2);
+                slideGroup.add(ladder);
+
+                const chute = new THREE.Mesh(new THREE.BoxGeometry(1.0, 0.15, 3.2), new THREE.MeshLambertMaterial({ color: 0x89CFF0 }));
+                chute.rotation.x = Math.PI / 4;
+                chute.position.set(0, 1.2, 0.2);
+                slideGroup.add(chute);
+                playGroup.add(slideGroup);
+
+                // Bập bênh (Seesaw) nghiêng nhẹ
+                const seesawBase = new THREE.Mesh(new THREE.ConeGeometry(0.4, 0.8, 8), new THREE.MeshLambertMaterial({ color: 0xC68B59 }));
+                seesawBase.position.set(5, 0.4, 2);
+                playGroup.add(seesawBase);
+
+                this.seesawPlank = new THREE.Mesh(new THREE.BoxGeometry(3.6, 0.12, 0.5), new THREE.MeshLambertMaterial({ color: 0xFFD1DC }));
+                this.seesawPlank.position.set(5, 0.8, 2);
+                playGroup.add(this.seesawPlank);
+
+                // Khối xếp hình gỗ chữ cái T - O - M
+                const blockColors = [0x89CFF0, 0xFFD1DC, 0xF5D061];
+                ['T', 'O', 'M'].forEach((char, idx) => {
+                    const bCanvas = document.createElement('canvas');
+                    bCanvas.width = 128;
+                    bCanvas.height = 128;
+                    const bctx = bCanvas.getContext('2d');
+                    bctx.fillStyle = '#FFFFFF';
+                    bctx.fillRect(0, 0, 128, 128);
+                    bctx.fillStyle = '#2C3E50';
+                    bctx.font = 'bold 72px Nunito, sans-serif';
+                    bctx.textAlign = 'center';
+                    bctx.fillText(char, 64, 90);
+
+                    const bMesh = new THREE.Mesh(
+                        new THREE.BoxGeometry(0.9, 0.9, 0.9),
+                        new THREE.MeshLambertMaterial({ map: new THREE.CanvasTexture(bCanvas) })
+                    );
+                    bMesh.position.set(4 + idx * 1.1, 0.45, -3);
+                    playGroup.add(bMesh);
+                });
+
+                scene.add(playGroup);
+                this.colliders.push({ x: -17, z: -2, r: 3.4 });
+
+                // Điểm kích hoạt Mini-game hứng bóng bay
+                this.interactiveObjects.push({
+                    name: 'Trò chơi hứng bóng bay',
+                    pos: new THREE.Vector3(-17, 1, 2),
+                    radius: 3.5,
+                    type: 'balloon_game'
+                });
+            },
+
+            // 5. Khu chụp ảnh (Photo Booth)
+            buildPhotoZone() {
+                const photoGroup = new THREE.Group();
+                photoGroup.position.set(17, 0, 0);
+
+                // Khung ảnh vòm gỗ lớn
+                const frameGeo = new THREE.TorusGeometry(3.0, 0.3, 10, 24, Math.PI);
+                const frameMat = new THREE.MeshLambertMaterial({ color: 0xF5D061 });
+                const frame = new THREE.Mesh(frameGeo, frameMat);
+                frame.position.y = 3.0;
+                photoGroup.add(frame);
+
+                // Chữ 3D "ONE" (Thôi nôi 1 tuổi)
+                const oneCanvas = document.createElement('canvas');
+                oneCanvas.width = 256;
+                oneCanvas.height = 128;
+                const oCtx = oneCanvas.getContext('2d');
+                oCtx.fillStyle = '#FFFFFF';
+                oCtx.roundRect(10, 10, 236, 108, 20);
+                oCtx.fill();
+                oCtx.fillStyle = '#E5A93C';
+                oCtx.font = '900 64px Nunito, sans-serif';
+                oCtx.textAlign = 'center';
+                oCtx.fillText('ONE', 128, 85);
+
+                const oneMesh = new THREE.Mesh(
+                    new THREE.PlaneGeometry(2.4, 1.2),
+                    new THREE.MeshBasicMaterial({ map: new THREE.CanvasTexture(oneCanvas), transparent: true })
+                );
+                oneMesh.position.set(0, 3.6, 0.1);
+                photoGroup.add(oneMesh);
+
+                // Chùm bóng bay trang trí hai bên khung
+                [[-2.8, 2.4], [2.8, 2.4]].forEach(([bx, by]) => {
+                    const bCluster = new THREE.Mesh(
+                        new THREE.SphereGeometry(0.7, 12, 12),
+                        new THREE.MeshLambertMaterial({ color: 0xFFD1DC })
+                    );
+                    bCluster.position.set(bx, by, 0);
+                    photoGroup.add(bCluster);
+                });
+
+                scene.add(photoGroup);
+                this.colliders.push({ x: 17, z: 0, r: 2.5 });
+
+                // Điểm tương tác chụp ảnh
+                this.interactiveObjects.push({
+                    name: 'Khu chụp ảnh kỷ niệm',
+                    pos: new THREE.Vector3(17, 1, 0),
+                    radius: 3.5,
+                    type: 'photo_booth'
+                });
+            },
+
+            // 6. Khu bàn quà (Gift Zone)
+            buildGiftZone() {
+                const giftTableGroup = new THREE.Group();
+                giftTableGroup.position.set(-8, 0, -6);
+
+                // Bàn để quà dài
+                const tableMesh = new THREE.Mesh(
+                    new THREE.BoxGeometry(5.4, 0.8, 1.6),
+                    new THREE.MeshLambertMaterial({ color: 0xFFFBEA })
+                );
+                tableMesh.position.y = 0.4;
+                tableMesh.castShadow = true;
+                tableMesh.receiveShadow = true;
+                giftTableGroup.add(tableMesh);
+
+                // 6 Hộp quà bí mật rực rỡ với nơ
+                const giftItems = [
+                    { id: 1, title: 'Gấu Teddy nhung ấm áp', desc: 'Chúc Tôm luôn được gia đình yêu thương và ôm ấp vỗ về!', color: 0x89CFF0, icon: '🧸' },
+                    { id: 2, title: 'Xe hơi tí hon siêu tốc', desc: 'Chúc Tôm thỏa sức khám phá thế giới bao la rộng lớn!', color: 0xFFD1DC, icon: '🚗' },
+                    { id: 3, title: 'Tháp xếp hình thông minh', desc: 'Chúc Tôm thông minh, sáng tạo và luôn tự tin vững bước!', color: 0xF5D061, icon: '🧩' },
+                    { id: 4, title: 'Chùm bóng bay ước mơ', desc: 'Chúc ước mơ của bé Tôm bay cao vút trên bầu trời xanh!', color: 0xC1F0D0, icon: '🎈' },
+                    { id: 5, title: 'Ngôi sao nhỏ tỏa sáng', desc: 'Chúc Tôm luôn là ngôi sao nhỏ rạng rỡ của ba mẹ!', color: 0xE6E6FA, icon: '⭐' },
+                    { id: 6, title: 'Vương miện hoàng tử nhí', desc: 'Chúc hoàng tử nhỏ của ba mẹ luôn bình an, mạnh khỏe!', color: 0xF5D061, icon: '👑' }
+                ];
+
+                giftItems.forEach((gift, idx) => {
+                    const gx = -2.0 + (idx % 3) * 2.0;
+                    const gz = idx < 3 ? -0.3 : 0.3;
+
+                    const boxGroup = new THREE.Group();
+                    boxGroup.position.set(gx, 0.8, gz);
+
+                    // Thân hộp
+                    const body = new THREE.Mesh(
+                        new THREE.BoxGeometry(0.55, 0.5, 0.55),
+                        new THREE.MeshLambertMaterial({ color: gift.color })
+                    );
+                    body.position.y = 0.25;
+                    body.castShadow = true;
+                    boxGroup.add(body);
+
+                    // Nắp hộp có thể mở
+                    const lid = new THREE.Mesh(
+                        new THREE.BoxGeometry(0.6, 0.12, 0.6),
+                        new THREE.MeshLambertMaterial({ color: 0xFFFFFF })
+                    );
+                    lid.position.y = 0.53;
+                    boxGroup.add(lid);
+
+                    // Nơ trên nắp
+                    const bow = new THREE.Mesh(
+                        new THREE.SphereGeometry(0.1, 8, 8),
+                        new THREE.MeshLambertMaterial({ color: 0xF5D061 })
+                    );
+                    bow.position.y = 0.62;
+                    boxGroup.add(bow);
+
+                    giftTableGroup.add(boxGroup);
+
+                    this.giftBoxes.push({
+                        id: gift.id,
+                        info: gift,
+                        group: boxGroup,
+                        lidMesh: lid,
+                        opened: StorageManager.data.openedGifts.includes(gift.id),
+                        worldPos: new THREE.Vector3(-8 + gx, 1, -6 + gz)
+                    });
+                });
+
+                scene.add(giftTableGroup);
+                this.colliders.push({ x: -8, z: -6, r: 2.8 });
+
+                // Điểm tương tác bàn quà
+                this.interactiveObjects.push({
+                    name: 'Hộp quà bí mật',
+                    pos: new THREE.Vector3(-8, 1, -5.5),
+                    radius: 3.5,
+                    type: 'gift_table'
+                });
+
+                // Hộp thư sinh nhật gần cổng chào
+                this.buildMailbox();
+            },
+
+            buildMailbox() {
+                const mbGroup = new THREE.Group();
+                mbGroup.position.set(4.5, 0, 18);
+
+                const post = new THREE.Mesh(
+                    new THREE.CylinderGeometry(0.12, 0.12, 1.3, 12),
+                    new THREE.MeshLambertMaterial({ color: 0xC68B59 })
+                );
+                post.position.y = 0.65;
+                mbGroup.add(post);
+
+                const box = new THREE.Mesh(
+                    new THREE.BoxGeometry(0.6, 0.45, 0.8),
+                    new THREE.MeshLambertMaterial({ color: 0xE5A93C })
+                );
+                box.position.y = 1.35;
+                box.castShadow = true;
+                mbGroup.add(box);
+
+                scene.add(mbGroup);
+                this.colliders.push({ x: 4.5, z: 18, r: 0.8 });
+
+                this.interactiveObjects.push({
+                    name: 'Hộp thư chúc mừng',
+                    pos: new THREE.Vector3(4.5, 1, 18),
+                    radius: 3.0,
+                    type: 'mailbox'
+                });
+            },
+
+            // Hiệu ứng môi trường (Bóng bay lơ lửng, Confetti, Sao sáng)
+            buildEnvironmentEffects() {
+                // 30 Quả bóng bay pastel bay lơ lửng bồng bềnh
+                const balloonColors = [0x89CFF0, 0xFFD1DC, 0xF5D061, 0xC1F0D0, 0xFFFFFF];
+                for (let i = 0; i < 30; i++) {
+                    const b = new THREE.Mesh(
+                        new THREE.SphereGeometry(0.4, 12, 12),
+                        new THREE.MeshLambertMaterial({ color: balloonColors[i % balloonColors.length] })
+                    );
+                    b.position.set(
+                        (Math.random() - 0.5) * 44,
+                        3 + Math.random() * 8,
+                        (Math.random() - 0.5) * 44
+                    );
+                    b.scale.set(1, 1.25, 1);
+                    scene.add(b);
+                    this.balloons.push({
+                        mesh: b,
+                        baseY: b.position.y,
+                        speed: 0.008 + Math.random() * 0.012,
+                        sway: Math.random() * Math.PI * 2
+                    });
+                }
+
+                // Hệ thống hạt Confetti bay nhẹ trong gió
+                const confettiCount = 120;
+                const confettiGeo = new THREE.BufferGeometry();
+                const positions = new Float32Array(confettiCount * 3);
+                const colors = new Float32Array(confettiCount * 3);
+                const confColorPool = [
+                    new THREE.Color(0xFFD1DC),
+                    new THREE.Color(0x89CFF0),
+                    new THREE.Color(0xF5D061),
+                    new THREE.Color(0xC1F0D0),
+                    new THREE.Color(0xE6E6FA)
+                ];
+
+                for (let i = 0; i < confettiCount; i++) {
+                    positions[i * 3] = (Math.random() - 0.5) * 40;
+                    positions[i * 3 + 1] = Math.random() * 16;
+                    positions[i * 3 + 2] = (Math.random() - 0.5) * 40;
+
+                    const c = confColorPool[Math.floor(Math.random() * confColorPool.length)];
+                    colors[i * 3] = c.r;
+                    colors[i * 3 + 1] = c.g;
+                    colors[i * 3 + 2] = c.b;
+                }
+
+                confettiGeo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+                confettiGeo.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+
+                const confettiMat = new THREE.PointsMaterial({
+                    size: 0.25,
+                    vertexColors: true,
+                    transparent: true,
+                    opacity: 0.85
+                });
+
+                this.confettiParticles = new THREE.Points(confettiGeo, confettiMat);
+                scene.add(this.confettiParticles);
+            },
+
+            update(delta) {
+                // Đung đưa bóng bay
+                const time = performance.now() * 0.001;
+                this.balloons.forEach(b => {
+                    b.mesh.position.y = b.baseY + Math.sin(time * 2 + b.sway) * 0.5;
+                    b.mesh.position.x += Math.sin(time + b.sway) * 0.005;
+                });
+
+                // Confetti rơi nhẹ
+                if (this.confettiParticles) {
+                    const pos = this.confettiParticles.geometry.attributes.position.array;
+                    for (let i = 0; i < pos.length; i += 3) {
+                        pos[i + 1] -= delta * 1.5;
+                        if (pos[i + 1] < 0.2) {
+                            pos[i + 1] = 15;
+                        }
+                    }
+                    this.confettiParticles.geometry.attributes.position.needsUpdate = true;
+                }
+
+                // Bập bênh đung đưa
+                if (this.seesawPlank) {
+                    this.seesawPlank.rotation.z = Math.sin(time * 1.8) * 0.18;
+                }
+
+                // Ngọn lửa nến lung linh
+                if (this.candleFlames) {
+                    this.candleFlames.forEach((f, idx) => {
+                        f.scale.y = 0.8 + Math.sin(time * 10 + idx) * 0.25;
+                        f.rotation.z = Math.sin(time * 8 + idx) * 0.1;
+                    });
+                }
+            }
+        };
+
+        /* ==========================================================================
+           6. NHÂN VẬT TÔM (BÉ PHẠM HOÀNG MINH TRÍ - CHIBI 1 TUỔI TRUNG TÂM)
+           ========================================================================== */
+        class TomCharacter {
+            constructor() {
+                this.group = new THREE.Group();
+                this.group.position.set(1.4, 0.9, -14); // Đứng cạnh bánh sinh nhật trên sân khấu
+                this.animTime = 0;
+                this.isBlowing = false;
+                this.initModel();
+            }
+
+            initModel() {
+                // Tạo nhân vật bé Tôm Chibi đáng yêu
+                const skinMat = new THREE.MeshLambertMaterial({
+                    map: createChibiFaceTexture('#FFAAA6', 'open')
+                });
+                const romperMat = new THREE.MeshLambertMaterial({ color: 0x89CFF0 }); // Áo yếm Baby Blue
+                const hairMat = new THREE.MeshLambertMaterial({ color: 0x2C3E50 }); // Tóc đen mềm mại
+                const crownMat = new THREE.MeshLambertMaterial({ color: 0xF5D061 }); // Vương miện vàng
+
+                // Đầu tròn phúng phính em bé
+                this.head = new THREE.Mesh(new THREE.SphereGeometry(0.42, 16, 16), skinMat);
+                this.head.position.y = 0.82;
+                this.head.castShadow = true;
+                this.group.add(this.head);
+
+                // Tóc đen Chibi có búi tóc con ngộ nghĩnh
+                const hair = new THREE.Mesh(new THREE.SphereGeometry(0.44, 16, 16), hairMat);
+                hair.position.set(0, 0.86, -0.06);
+                hair.scale.set(1, 0.9, 0.95);
+                this.group.add(hair);
+
+                // Vương miện nhỏ hoàng tử nhí
+                const crown = new THREE.Mesh(new THREE.CylinderGeometry(0.18, 0.14, 0.16, 5), crownMat);
+                crown.position.set(0, 1.28, 0);
+                this.group.add(crown);
+
+                // Thân tròn yếm baby
+                this.body = new THREE.Mesh(new THREE.CylinderGeometry(0.24, 0.32, 0.45, 14), romperMat);
+                this.body.position.y = 0.44;
+                this.body.castShadow = true;
+                this.group.add(this.body);
+
+                // Nơ cổ xinh xắn
+                const bow = new THREE.Mesh(new THREE.BoxGeometry(0.14, 0.08, 0.06), new THREE.MeshLambertMaterial({ color: 0xFFD1DC }));
+                bow.position.set(0, 0.62, 0.22);
+                this.group.add(bow);
+
+                // Tay cầm gấu Teddy mini bông nhung
+                this.leftArm = new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.08, 0.3, 8), skinMat);
+                this.leftArm.position.set(-0.32, 0.46, 0);
+                this.group.add(this.leftArm);
+
+                this.rightArm = new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.08, 0.3, 8), skinMat);
+                this.rightArm.position.set(0.32, 0.46, 0.1);
+                this.rightArm.rotation.x = -Math.PI / 4; // Vẫy tay chào
+                this.group.add(this.rightArm);
+
+                // Chú gấu bông nhỏ Tôm ôm bên hông
+                const miniBear = new THREE.Mesh(new THREE.SphereGeometry(0.16, 10, 10), new THREE.MeshLambertMaterial({ color: 0xC68B59 }));
+                miniBear.position.set(-0.35, 0.4, 0.2);
+                this.group.add(miniBear);
+
+                scene.add(this.group);
+            }
+
+            update(delta) {
+                this.animTime += delta * 3.5;
+                // Bé Tôm nhún nhảy vẫy tay vui tươi
+                this.group.position.y = 0.9 + Math.abs(Math.sin(this.animTime)) * 0.08;
+                this.head.rotation.y = Math.sin(this.animTime * 0.7) * 0.2;
+                this.rightArm.rotation.z = Math.sin(this.animTime * 2) * 0.4;
+
+                if (this.isBlowing) {
+                    this.head.rotation.x = 0.2;
+                }
+            }
+        }
+
+        /* ==========================================================================
+           5. CHARACTER BUILDER VÀ PLAYER CONTROLLER (ĐIỀU KHIỂN NGƯỜI CHƠI)
+           ========================================================================== */
+        class ChibiCharacter {
+            constructor(name, colorHex = '#89CFF0', isPlayer = false) {
+                this.name = name;
+                this.colorHex = colorHex;
+                this.isPlayer = isPlayer;
+                this.group = new THREE.Group();
+                this.speed = 7.0;
+                this.isMoving = false;
+                this.walkCycle = 0;
+
+                this.initMesh();
+            }
+
+            initMesh() {
+                const skinMat = new THREE.MeshLambertMaterial({
+                    map: createChibiFaceTexture('#FFAAA6', this.isPlayer ? 'happy' : 'smile')
+                });
+                const outfitMat = new THREE.MeshLambertMaterial({ color: this.colorHex });
+                const hairColors = [0x2C3E50, 0x5D4037, 0x8D6E63, 0xD4A373];
+                const hairMat = new THREE.MeshLambertMaterial({
+                    color: hairColors[Math.floor(Math.random() * hairColors.length)]
+                });
+
+                // Đầu
+                this.head = new THREE.Mesh(new THREE.SphereGeometry(0.4, 16, 16), skinMat);
+                this.head.position.y = 0.92;
+                this.head.castShadow = true;
+                this.group.add(this.head);
+
+                // Tóc
+                const hair = new THREE.Mesh(new THREE.SphereGeometry(0.42, 14, 14), hairMat);
+                hair.position.set(0, 0.96, -0.05);
+                hair.scale.set(1, 0.92, 0.95);
+                this.group.add(hair);
+
+                // Nón sinh nhật chóp nhọn nhiều màu
+                const hatColors = [0xF5D061, 0xFF6B6B, 0x89CFF0, 0xFFD1DC];
+                const hatMat = new THREE.MeshLambertMaterial({
+                    color: hatColors[Math.floor(Math.random() * hatColors.length)]
+                });
+                const hat = new THREE.Mesh(new THREE.ConeGeometry(0.18, 0.45, 12), hatMat);
+                hat.position.set(0, 1.45, 0);
+                this.group.add(hat);
+
+                // Thân áo
+                this.body = new THREE.Mesh(new THREE.CylinderGeometry(0.26, 0.32, 0.48, 12), outfitMat);
+                this.body.position.y = 0.52;
+                this.body.castShadow = true;
+                this.group.add(this.body);
+
+                // 2 Chân di chuyển
+                const legMat = new THREE.MeshLambertMaterial({ color: 0x34495E });
+                this.leftLeg = new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.08, 0.32, 8), legMat);
+                this.leftLeg.position.set(-0.14, 0.16, 0);
+                this.group.add(this.leftLeg);
+
+                this.rightLeg = new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.08, 0.32, 8), legMat);
+                this.rightLeg.position.set(0.14, 0.16, 0);
+                this.group.add(this.rightLeg);
+
+                // 2 Tay
+                this.leftArm = new THREE.Mesh(new THREE.CylinderGeometry(0.07, 0.07, 0.32, 8), skinMat);
+                this.leftArm.position.set(-0.35, 0.55, 0);
+                this.group.add(this.leftArm);
+
+                this.rightArm = new THREE.Mesh(new THREE.CylinderGeometry(0.07, 0.07, 0.32, 8), skinMat);
+                this.rightArm.position.set(0.35, 0.55, 0);
+                this.group.add(this.rightArm);
+
+                scene.add(this.group);
+            }
+
+            setOutfitColor(hex) {
+                this.colorHex = hex;
+                if (this.body) {
+                    this.body.material.color.set(hex);
+                }
+            }
+
+            animateWalking(delta) {
+                if (this.isMoving) {
+                    this.walkCycle += delta * 12;
+                    this.leftLeg.rotation.x = Math.sin(this.walkCycle) * 0.6;
+                    this.rightLeg.rotation.x = -Math.sin(this.walkCycle) * 0.6;
+                    this.leftArm.rotation.x = -Math.sin(this.walkCycle) * 0.5;
+                    this.rightArm.rotation.x = Math.sin(this.walkCycle) * 0.5;
+                    this.group.position.y = Math.abs(Math.sin(this.walkCycle * 2)) * 0.08;
+                } else {
+                    this.leftLeg.rotation.x = 0;
+                    this.rightLeg.rotation.x = 0;
+                    this.leftArm.rotation.x = 0;
+                    this.rightArm.rotation.x = 0;
+                    this.group.position.y = 0;
+                }
+            }
+        }
+
+        /* Controller cho Người chơi */
+        class PlayerController {
+            constructor(playerChibi) {
+                this.player = playerChibi;
+                this.moveDir = new THREE.Vector2(0, 0);
+                this.cameraAngle = { theta: 0, phi: 0.3 };
+                this.cameraDistance = 8.0;
+                this.cameraTarget = new THREE.Vector3();
+                this.keys = {};
+                this.isPointerDown = false;
+                this.lastPointer = { x: 0, y: 0 };
+                this.stepAudioTimer = 0;
+
+                this.initInputs();
+            }
+
+            initInputs() {
+                // Bàn phím máy tính
+                window.addEventListener('keydown', e => {
+                    this.keys[e.code] = true;
+                    if (e.code === 'KeyE' || e.code === 'Space') {
+                        e.preventDefault();
+                        InteractionSystem.triggerCurrentAction();
+                    }
+                });
+
+                window.addEventListener('keyup', e => {
+                    this.keys[e.code] = false;
+                });
+
+                // Kéo xoay camera bằng chuột hoặc cảm ứng trên màn hình trống
+                window.addEventListener('pointerdown', e => {
+                    if (e.target.closest('#joystick-zone') || e.target.closest('.hud-actions-right') || e.target.closest('.modal-backdrop:not(.hidden)')) {
+                        return;
+                    }
+                    this.isPointerDown = true;
+                    this.lastPointer.x = e.clientX;
+                    this.lastPointer.y = e.clientY;
+                });
+
+                window.addEventListener('pointermove', e => {
+                    if (!this.isPointerDown) return;
+                    const dx = e.clientX - this.lastPointer.x;
+                    const dy = e.clientY - this.lastPointer.y;
+                    this.lastPointer.x = e.clientX;
+                    this.lastPointer.y = e.clientY;
+
+                    this.cameraAngle.theta -= dx * 0.006;
+                    this.cameraAngle.phi = Math.max(0.1, Math.min(1.2, this.cameraAngle.phi + dy * 0.005));
+                });
+
+                window.addEventListener('pointerup', () => { this.isPointerDown = false; });
+                window.addEventListener('pointercancel', () => { this.isPointerDown = false; });
+
+                // Cần gạt Joystick ảo trên điện thoại
+                this.initVirtualJoystick();
+            }
+
+            initVirtualJoystick() {
+                const zone = document.getElementById('joystick-zone');
+                const stick = document.getElementById('joystick-stick');
+                let touchId = null;
+                let startPos = { x: 0, y: 0 };
+                const maxRadius = 42;
+
+                const onStart = (e) => {
+                    const touch = e.changedTouches ? e.changedTouches[0] : e;
+                    touchId = touch.identifier ?? 'mouse';
+                    const rect = zone.getBoundingClientRect();
+                    startPos.x = rect.left + rect.width / 2;
+                    startPos.y = rect.top + rect.height / 2;
+                    onMove(e);
+                };
+
+                const onMove = (e) => {
+                    let touch = null;
+                    if (e.changedTouches) {
+                        for (let i = 0; i < e.changedTouches.length; i++) {
+                            if (e.changedTouches[i].identifier === touchId) {
+                                touch = e.changedTouches[i];
+                                break;
+                            }
+                        }
+                    } else if (touchId === 'mouse') {
+                        touch = e;
+                    }
+                    if (!touch) return;
+
+                    const dx = touch.clientX - startPos.x;
+                    const dy = touch.clientY - startPos.y;
+                    const dist = Math.hypot(dx, dy);
+                    const clampedDist = Math.min(dist, maxRadius);
+                    const angle = Math.atan2(dy, dx);
+
+                    const finalX = Math.cos(angle) * clampedDist;
+                    const finalY = Math.sin(angle) * clampedDist;
+
+                    stick.style.transform = `translate(${finalX}px, ${finalY}px)`;
+
+                    // Chuẩn hóa vector di chuyển (-1 đến 1)
+                    this.moveDir.x = finalX / maxRadius;
+                    this.moveDir.y = finalY / maxRadius;
+                };
+
+                const onEnd = (e) => {
+                    stick.style.transform = 'translate(0px, 0px)';
+                    this.moveDir.set(0, 0);
+                    touchId = null;
+                };
+
+                zone.addEventListener('touchstart', onStart, { passive: true });
+                window.addEventListener('touchmove', onMove, { passive: true });
+                window.addEventListener('touchend', onEnd, { passive: true });
+                window.addEventListener('touchcancel', onEnd, { passive: true });
+            }
+
+            update(delta) {
+                let inputX = this.moveDir.x;
+                let inputZ = this.moveDir.y;
+
+                // Kết hợp bàn phím nếu có
+                if (this.keys['KeyW'] || this.keys['ArrowUp']) inputZ -= 1;
+                if (this.keys['KeyS'] || this.keys['ArrowDown']) inputZ += 1;
+                if (this.keys['KeyA'] || this.keys['ArrowLeft']) inputX -= 1;
+                if (this.keys['KeyD'] || this.keys['ArrowRight']) inputX += 1;
+
+                const inputLen = Math.hypot(inputX, inputZ);
+                const isMoving = inputLen > 0.05;
+                this.player.isMoving = isMoving;
+
+                if (isMoving) {
+                    const normX = inputX / (inputLen > 1 ? inputLen : 1);
+                    const normZ = inputZ / (inputLen > 1 ? inputLen : 1);
+
+                    // Di chuyển theo hướng camera đang nhìn
+                    const forward = new THREE.Vector3(-Math.sin(this.cameraAngle.theta), 0, -Math.cos(this.cameraAngle.theta));
+                    const right = new THREE.Vector3(forward.z, 0, -forward.x);
+
+                    const moveVec = new THREE.Vector3()
+                        .addScaledVector(right, normX)
+                        .addScaledVector(forward, -normZ)
+                        .normalize()
+                        .multiplyScalar(this.player.speed * delta);
+
+                    const nextX = this.player.group.position.x + moveVec.x;
+                    const nextZ = this.player.group.position.z + moveVec.z;
+
+                    // Kiểm tra va chạm với vật cản
+                    if (!this.checkCollision(nextX, nextZ)) {
+                        this.player.group.position.x = nextX;
+                        this.player.group.position.z = nextZ;
+                    }
+
+                    // Xoay mặt nhân vật theo hướng di chuyển
+                    const targetAngle = Math.atan2(moveVec.x, moveVec.z);
+                    this.player.group.rotation.y = targetAngle;
+
+                    // Âm thanh bước chân
+                    this.stepAudioTimer += delta;
+                    if (this.stepAudioTimer > 0.32) {
+                        this.stepAudioTimer = 0;
+                        audio.playSfx('footstep');
+                    }
+                }
+
+                this.player.animateWalking(delta);
+
+                // Cập nhật Camera mượt mà theo sau người chơi
+                this.updateCamera(delta);
+            }
+
+            checkCollision(x, z) {
+                const b = CONFIG.WORLD_BOUNDS;
+                if (x < b.minX || x > b.maxX || z < b.minZ || z > b.maxZ) {
+                    return true;
+                }
+                const playerRadius = 0.5;
+                for (const col of World.colliders) {
+                    const dist = Math.hypot(x - col.x, z - col.z);
+                    if (dist < (col.r + playerRadius)) {
+                        return true;
+                    }
+                }
+                return false;
+            }
+
+            updateCamera(delta) {
+                const pPos = this.player.group.position;
+                this.cameraTarget.lerp(new THREE.Vector3(pPos.x, pPos.y + 1.2, pPos.z), delta * 8);
+
+                const cx = this.cameraTarget.x + Math.sin(this.cameraAngle.theta) * Math.cos(this.cameraAngle.phi) * this.cameraDistance;
+                const cy = this.cameraTarget.y + Math.sin(this.cameraAngle.phi) * this.cameraDistance;
+                const cz = this.cameraTarget.z + Math.cos(this.cameraAngle.theta) * Math.cos(this.cameraAngle.phi) * this.cameraDistance;
+
+                camera.position.set(cx, cy, cz);
+                camera.lookAt(this.cameraTarget);
+            }
+        }
+
+        /* ==========================================================================
+           7 & 8. KHÁCH MỜI AI (30-60 KHÁCH CHIBI, ĐA DẠNG HÀNH VI & LỜI THOẠI)
+           ========================================================================== */
+        const WISH_QUOTES = [
+            "Chúc mừng sinh nhật Tôm!",
+            "Tôm mau ăn chóng lớn nhé!",
+            "Chúc con luôn mạnh khỏe!",
+            "Luôn vui vẻ và hạnh phúc nhé Tôm ơi!",
+            "Chúc Tôm có thật nhiều bạn tốt!",
+            "Happy Birthday Tom!",
+            "Bé Tôm ngoan ngoãn đáng yêu quá!",
+            "Chúc con một đời bình an và may mắn!",
+            "Bánh kem sinh nhật đẹp tuyệt vời!",
+            "Bé Tôm tròn 1 tuổi diệu kỳ!"
+        ];
+
+        class AIGuestManager {
+            constructor() {
+                this.guests = [];
+                this.speechBubbleElements = [];
+                this.arrivalTimer = 0;
+            }
+
+            init() {
+                const palette = ['#89CFF0', '#FFD1DC', '#C1F0D0', '#F5D061', '#E6E6FA', '#C68B59', '#FFEAA7'];
+                for (let i = 0; i < CONFIG.INITIAL_GUEST_COUNT; i++) {
+                    const color = palette[i % palette.length];
+                    const guest = new ChibiCharacter(`Khách #${i + 1}`, color, false);
+                    
+                    // Phân bố khách dạo chơi khắp vườn
+                    const rx = (Math.random() - 0.5) * 36;
+                    const rz = (Math.random() - 0.5) * 36;
+                    guest.group.position.set(rx, 0, rz);
+
+                    const behavior = ['wander', 'chat', 'dance', 'cheer'][i % 4];
+                    this.guests.push({
+                        chibi: guest,
+                        behavior: behavior,
+                        targetPos: new THREE.Vector3(rx, 0, rz),
+                        stateTimer: Math.random() * 5,
+                        speechCooldown: Math.random() * 8 + 4,
+                        bubbleEl: null
+                    });
+                }
+                this.updateCounterHUD();
+            }
+
+            spawnArrivalWave() {
+                if (this.guests.length >= CONFIG.MAX_GUEST_COUNT) return;
+                const count = Math.min(8, CONFIG.MAX_GUEST_COUNT - this.guests.length);
+                const palette = ['#FF7675', '#74B9FF', '#55EFC4', '#FFEAA7', '#A29BFE'];
+
+                for (let i = 0; i < count; i++) {
+                    const guest = new ChibiCharacter(`Khách Mới #${this.guests.length + 1}`, palette[i % palette.length], false);
+                    // Xuất hiện từ cổng chào (Z = 28)
+                    guest.group.position.set((Math.random() - 0.5) * 3, 0, 28 + Math.random() * 2);
+
+                    this.guests.push({
+                        chibi: guest,
+                        behavior: 'wander',
+                        targetPos: new THREE.Vector3((Math.random() - 0.5) * 20, 0, 5 + Math.random() * 10),
+                        stateTimer: 6,
+                        speechCooldown: 3,
+                        bubbleEl: null
+                    });
+                }
+
+                audio.playSfx('chime');
+                this.updateCounterHUD();
+            }
+
+            updateCounterHUD() {
+                const counterEl = document.getElementById('hud-guest-counter');
+                if (counterEl) {
+                    counterEl.innerHTML = `<span>🎈 Hôm nay có <b>${this.guests.length}</b> người đến chung vui</span>`;
+                }
+            }
+
+            gatherAtStage() {
+                // Toàn bộ khách mời đồng loạt tiến về quây quần quanh sân khấu
+                this.guests.forEach((g, idx) => {
+                    const angle = (idx / this.guests.length) * Math.PI * 2;
+                    const dist = 7.5 + Math.random() * 2;
+                    g.targetPos.set(Math.cos(angle) * dist, 0, -13 + Math.sin(angle) * dist);
+                    g.behavior = 'cheer';
+                    g.stateTimer = 15;
+                });
+            }
+
+            update(delta) {
+                const time = performance.now() * 0.001;
+
+                // Đợt khách mới đến định kỳ
+                this.arrivalTimer += delta * 1000;
+                if (this.arrivalTimer > CONFIG.SPAWN_ARRIVAL_INTERVAL) {
+                    this.arrivalTimer = 0;
+                    this.spawnArrivalWave();
+                }
+
+                this.guests.forEach((g) => {
+                    g.stateTimer -= delta;
+                    g.speechCooldown -= delta;
+
+                    // Hành vi: Đi dạo (Wander)
+                    if (g.behavior === 'wander') {
+                        if (g.stateTimer <= 0) {
+                            g.targetPos.set((Math.random() - 0.5) * 32, 0, (Math.random() - 0.5) * 32);
+                            g.stateTimer = 4 + Math.random() * 6;
+                        }
+                        const dir = new THREE.Vector3().subVectors(g.targetPos, g.chibi.group.position);
+                        dir.y = 0;
+                        const dist = dir.length();
+                        if (dist > 0.4) {
+                            dir.normalize();
+                            g.chibi.group.position.addScaledVector(dir, 2.2 * delta);
+                            g.chibi.group.rotation.y = Math.atan2(dir.x, dir.z);
+                            g.chibi.isMoving = true;
+                        } else {
+                            g.chibi.isMoving = false;
+                        }
+                    } 
+                    // Hành vi: Nhảy theo nhạc (Dance)
+                    else if (g.behavior === 'dance') {
+                        g.chibi.isMoving = false;
+                        g.chibi.group.position.y = Math.abs(Math.sin(time * 6 + g.chibi.group.id)) * 0.12;
+                        g.chibi.head.rotation.y = Math.sin(time * 4) * 0.3;
+                    }
+                    // Hành vi: Vỗ tay hoan hô (Cheer)
+                    else if (g.behavior === 'cheer') {
+                        g.chibi.isMoving = false;
+                        g.chibi.leftArm.rotation.x = -Math.PI / 2 + Math.sin(time * 10) * 0.3;
+                        g.chibi.rightArm.rotation.x = -Math.PI / 2 - Math.sin(time * 10) * 0.3;
+                    }
+
+                    g.chibi.animateWalking(delta);
+
+                    // Thỉnh thoảng hiện bong bóng lời thoại tiếng Việt
+                    if (g.speechCooldown <= 0) {
+                        g.speechCooldown = 12 + Math.random() * 18;
+                        this.showSpeechBubble(g, WISH_QUOTES[Math.floor(Math.random() * WISH_QUOTES.length)]);
+                    }
+                });
+
+                // Cập nhật vị trí 2D của các bong bóng lời thoại trên màn hình
+                this.updateSpeechBubbles2D();
+            }
+
+            showSpeechBubble(guestObj, text) {
+                // Giới hạn số bong bóng xuất hiện cùng lúc để không rối mắt
+                if (document.querySelectorAll('.speech-bubble-3d').length > 5) return;
+
+                const bubble = document.createElement('div');
+                bubble.className = 'speech-bubble-3d';
+                bubble.textContent = text;
+                document.body.appendChild(bubble);
+
+                guestObj.bubbleEl = bubble;
+
+                setTimeout(() => {
+                    if (bubble.parentNode) {
+                        bubble.parentNode.removeChild(bubble);
+                    }
+                    guestObj.bubbleEl = null;
+                }, 4000);
+            }
+
+            updateSpeechBubbles2D() {
+                const tempV = new THREE.Vector3();
+                this.guests.forEach(g => {
+                    if (!g.bubbleEl) return;
+                    g.chibi.group.getWorldPosition(tempV);
+                    tempV.y += 1.8; // Chiều cao trên đầu
+
+                    tempV.project(camera);
+                    // Kiểm tra xem có nằm trong tầm nhìn camera không
+                    if (tempV.z > 1 || tempV.x < -1.1 || tempV.x > 1.1 || tempV.y < -1.1 || tempV.y > 1.1) {
+                        g.bubbleEl.style.display = 'none';
+                        return;
+                    }
+                    g.bubbleEl.style.display = 'block';
+                    const x = (tempV.x * 0.5 + 0.5) * window.innerWidth;
+                    const y = (-(tempV.y * 0.5) + 0.5) * window.innerHeight;
+                    g.bubbleEl.style.left = `${x}px`;
+                    g.bubbleEl.style.top = `${y}px`;
+                });
+            }
+        }
+
+        /* ==========================================================================
+           9. HỆ THỐNG TƯƠNG TÁC (INTERACTION SYSTEM)
+           ========================================================================== */
+        const InteractionSystem = {
+            currentAction: null,
+            promptEl: document.getElementById('interaction-prompt'),
+            promptTextEl: document.getElementById('interaction-prompt-text'),
+            mainBtn: document.getElementById('btn-main-interact'),
+
+            init() {
+                this.mainBtn.addEventListener('click', () => {
+                    this.triggerCurrentAction();
+                });
+            },
+
+            checkProximity(playerPos) {
+                let nearest = null;
+                let minDist = Infinity;
+
+                for (const obj of World.interactiveObjects) {
+                    const dist = playerPos.distanceTo(obj.pos);
+                    if (dist < obj.radius && dist < minDist) {
+                        minDist = dist;
+                        nearest = obj;
+                    }
+                }
+
+                if (nearest) {
+                    this.currentAction = nearest;
+                    this.promptTextEl.textContent = nearest.name;
+                    this.promptEl.classList.add('show');
+                } else {
+                    this.currentAction = null;
+                    this.promptEl.classList.remove('show');
+                }
+            },
+
+            triggerCurrentAction() {
+                if (!this.currentAction) {
+                    // Nếu không đứng cạnh điểm cố định, thực hiện hành động nhảy vui vẻ
+                    audio.playSfx('pop');
+                    player.group.position.y = 0.5;
+                    return;
+                }
+
+                audio.playSfx('chime');
+                switch (this.currentAction.type) {
+                    case 'cake':
+                        Activities.openCandleModal();
+                        break;
+                    case 'gift_table':
+                        Activities.openGiftModal();
+                        break;
+                    case 'balloon_game':
+                        Activities.startBalloonMiniGame();
+                        break;
+                    case 'photo_booth':
+                        Activities.openShareModal();
+                        break;
+                    case 'mailbox':
+                        Activities.openWishModal();
+                        break;
+                }
+            }
+        };
+
+        /* ==========================================================================
+           10, 11, 12, 13, 14. NĂM HOẠT ĐỘNG VÀ MINI-GAMES
+           ========================================================================== */
+        const Activities = {
+            // 1. Hoạt động Thổi nến sinh nhật
+            candleModal: document.getElementById('candle-modal'),
+            blowFill: document.getElementById('candle-blow-fill'),
+            blowBtn: document.getElementById('btn-candle-blow'),
+            candleVisual: document.getElementById('candle-visual-status'),
+            candleFinishMsg: document.getElementById('candle-finish-message'),
+            blowPower: 0,
+            blowInterval: null,
+
+            init() {
+                // Sự kiện thổi nến
+                const startBlow = () => {
+                    if (this.blowInterval) return;
+                    audio.playSfx('blow');
+                    tom.isBlowing = true;
+                    this.blowInterval = setInterval(() => {
+                        this.blowPower = Math.min(100, this.blowPower + 4);
+                        this.blowFill.style.width = `${this.blowPower}%`;
+                        if (this.blowPower >= 100) {
+                            this.finishCandleBlowing();
+                        }
+                    }, 50);
+                };
+
+                const endBlow = () => {
+                    clearInterval(this.blowInterval);
+                    this.blowInterval = null;
+                    tom.isBlowing = false;
+                };
+
+                this.blowBtn.addEventListener('mousedown', startBlow);
+                window.addEventListener('mouseup', endBlow);
+                this.blowBtn.addEventListener('touchstart', (e) => { e.preventDefault(); startBlow(); }, { passive: false });
+                window.addEventListener('touchend', endBlow);
+
+                document.getElementById('btn-candle-continue').addEventListener('click', () => {
+                    this.candleModal.classList.add('hidden');
+                });
+
+                // Tùy chỉnh bánh kem
+                this.initCakeCustomizer();
+
+                // Gửi lời chúc
+                this.initWishSender();
+
+                // Mini-game hứng bóng bay
+                this.initBalloonCatchGame();
+            },
+
+            openCandleModal() {
+                this.blowPower = 0;
+                this.blowFill.style.width = '0%';
+                this.candleVisual.textContent = '🕯️🕯️🕯️';
+                this.candleFinishMsg.style.display = 'none';
+                this.blowBtn.style.display = 'block';
+                this.candleModal.classList.remove('hidden');
+            },
+
+            finishCandleBlowing() {
+                clearInterval(this.blowInterval);
+                this.blowInterval = null;
+                tom.isBlowing = false;
+
+                // Tắt nến
+                this.candleVisual.textContent = '💨✨🎂';
+                if (World.candleFlames) {
+                    World.candleFlames.forEach(f => f.visible = false);
+                }
+
+                audio.playSfx('confetti');
+                audio.playSfx('applause');
+                audio.playHappyBirthdayTune();
+
+                // Toàn bộ khách mời AI vỗ tay và tụ họp
+                aiGuestManager.gatherAtStage();
+
+                this.blowBtn.style.display = 'none';
+                this.candleFinishMsg.style.display = 'block';
+
+                StorageManager.data.completedActivities.candles = true;
+                StorageManager.save();
+                Scrapbook.refresh();
+            },
+
+            // 2. Mở hộp quà bí mật
+            openGiftModal() {
+                // Lấy hộp quà chưa mở đầu tiên hoặc ngẫu nhiên
+                const unopened = World.giftBoxes.filter(g => !StorageManager.data.openedGifts.includes(g.id));
+                const target = unopened.length > 0 ? unopened[0] : World.giftBoxes[Math.floor(Math.random() * World.giftBoxes.length)];
+
+                const modal = document.getElementById('gift-modal');
+                const iconEl = document.getElementById('gift-reveal-icon');
+                const titleEl = document.getElementById('gift-reveal-title');
+                const descEl = document.getElementById('gift-reveal-desc');
+
+                iconEl.textContent = target.info.icon;
+                titleEl.textContent = target.info.title;
+                descEl.textContent = target.info.desc;
+
+                // Hiệu ứng mở nắp hộp 3D
+                target.lidMesh.rotation.x = -Math.PI / 3;
+                target.opened = true;
+
+                if (!StorageManager.data.openedGifts.includes(target.id)) {
+                    StorageManager.data.openedGifts.push(target.id);
+                    StorageManager.data.completedActivities.gifts = true;
+                    StorageManager.save();
+                }
+
+                audio.playSfx('chime');
+                audio.playSfx('confetti');
+                modal.classList.remove('hidden');
+
+                document.getElementById('btn-claim-gift').onclick = () => {
+                    modal.classList.add('hidden');
+                    Scrapbook.refresh();
+                };
+            },
+
+            // 3. Mini-game hứng bóng bay 30 giây
+            balloonGameActive: false,
+            balloonScore: 0,
+            balloonTimer: 30,
+            fallingBalloons: [],
+            balloonGameInterval: null,
+
+            initBalloonCatchGame() {
+                document.getElementById('bg-btn-exit').addEventListener('click', () => {
+                    this.stopBalloonMiniGame();
+                });
+            },
+
+            startBalloonMiniGame() {
+                if (this.balloonGameActive) return;
+                this.balloonGameActive = true;
+                this.balloonScore = 0;
+                this.balloonTimer = CONFIG.BALLOON_GAME_DURATION;
+
+                document.getElementById('bg-score').textContent = '0';
+                document.getElementById('bg-timer').textContent = `${this.balloonTimer}s`;
+                document.getElementById('balloon-game-banner').classList.add('show');
+
+                audio.playSfx('chime');
+
+                this.balloonGameInterval = setInterval(() => {
+                    this.balloonTimer--;
+                    document.getElementById('bg-timer').textContent = `${this.balloonTimer}s`;
+                    if (this.balloonTimer <= 0) {
+                        this.finishBalloonMiniGame();
+                    } else if (this.balloonTimer % 2 === 0) {
+                        this.spawnCatchableBalloon();
+                    }
+                }, 1000);
+
+                // Thả 5 quả đầu tiên
+                for (let i = 0; i < 5; i++) {
+                    this.spawnCatchableBalloon();
+                }
+            },
+
+            spawnCatchableBalloon() {
+                const colors = [0xFF6B6B, 0x89CFF0, 0xF5D061, 0xFFD1DC, 0xC1F0D0];
+                const b = new THREE.Mesh(
+                    new THREE.SphereGeometry(0.5, 12, 12),
+                    new THREE.MeshLambertMaterial({ color: colors[Math.floor(Math.random() * colors.length)] })
+                );
+                // Rơi xuống quanh khu vực người chơi
+                const px = player.group.position.x + (Math.random() - 0.5) * 14;
+                const pz = player.group.position.z + (Math.random() - 0.5) * 14;
+                b.position.set(px, 12 + Math.random() * 4, pz);
+                b.scale.set(1, 1.25, 1);
+                scene.add(b);
+
+                this.fallingBalloons.push({
+                    mesh: b,
+                    speed: 2.5 + Math.random() * 2.0
+                });
+            },
+
+            updateFallingBalloons(delta) {
+                if (!this.balloonGameActive) return;
+                const pPos = player.group.position;
+
+                for (let i = this.fallingBalloons.length - 1; i >= 0; i--) {
+                    const fb = this.fallingBalloons[i];
+                    fb.mesh.position.y -= fb.speed * delta;
+
+                    // Kiểm tra người chơi hứng được bóng
+                    const dist = Math.hypot(fb.mesh.position.x - pPos.x, fb.mesh.position.z - pPos.z);
+                    if (dist < 1.2 && fb.mesh.position.y < 2.0 && fb.mesh.position.y > 0.2) {
+                        // Hứng thành công!
+                        scene.remove(fb.mesh);
+                        this.fallingBalloons.splice(i, 1);
+                        this.balloonScore++;
+                        document.getElementById('bg-score').textContent = this.balloonScore;
+                        audio.playSfx('pop');
+                        continue;
+                    }
+
+                    // Chạm đất
+                    if (fb.mesh.position.y < 0.2) {
+                        scene.remove(fb.mesh);
+                        this.fallingBalloons.splice(i, 1);
+                    }
+                }
+            },
+
+            stopBalloonMiniGame() {
+                this.balloonGameActive = false;
+                clearInterval(this.balloonGameInterval);
+                document.getElementById('balloon-game-banner').classList.remove('show');
+                this.fallingBalloons.forEach(fb => scene.remove(fb.mesh));
+                this.fallingBalloons = [];
+            },
+
+            finishBalloonMiniGame() {
+                this.stopBalloonMiniGame();
+                audio.playSfx('applause');
+
+                if (this.balloonScore > StorageManager.data.balloonsCaughtRecord) {
+                    StorageManager.data.balloonsCaughtRecord = this.balloonScore;
+                }
+                StorageManager.data.completedActivities.balloons = true;
+                StorageManager.save();
+                Scrapbook.refresh();
+
+                showToast(`🎉 Tuyệt vời! Bạn đã gom được ${this.balloonScore} quả bóng bay rực rỡ tặng bé Tôm!`);
+            },
+
+            // 4. Trang trí bánh sinh nhật
+            initCakeCustomizer() {
+                const modal = document.getElementById('cake-modal');
+
+                // Chọn số tầng
+                document.querySelectorAll('#cake-tiers-picker .cake-flavor-chip').forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        document.querySelectorAll('#cake-tiers-picker .cake-flavor-chip').forEach(b => b.classList.remove('active'));
+                        btn.classList.add('active');
+                        StorageManager.data.cakeConfig.tiers = parseInt(btn.dataset.tiers);
+                    });
+                });
+
+                // Chọn vị/màu
+                document.querySelectorAll('#cake-color-picker .cake-flavor-chip').forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        document.querySelectorAll('#cake-color-picker .cake-flavor-chip').forEach(b => b.classList.remove('active'));
+                        btn.classList.add('active');
+                        StorageManager.data.cakeConfig.flavorColor = btn.dataset.color;
+                    });
+                });
+
+                // Chọn topping
+                document.querySelectorAll('#cake-topping-picker .cake-flavor-chip').forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        document.querySelectorAll('#cake-topping-picker .cake-flavor-chip').forEach(b => b.classList.remove('active'));
+                        btn.classList.add('active');
+                        StorageManager.data.cakeConfig.topping = btn.dataset.topping;
+                    });
+                });
+
+                // Nút lưu cập nhật trực tiếp lên cảnh 3D
+                document.getElementById('btn-save-cake').addEventListener('click', () => {
+                    const text = document.getElementById('cake-custom-text').value.trim() || 'TOM 1 TUỔI';
+                    StorageManager.data.cakeConfig.text = text;
+                    StorageManager.data.completedActivities.cake = true;
+                    StorageManager.save();
+
+                    // Rebuild bánh trên sân khấu
+                    const stageGroup = scene.children.find(c => c.position && c.position.z === -13);
+                    if (stageGroup) {
+                        World.buildCake(stageGroup);
+                    }
+
+                    audio.playSfx('chime');
+                    modal.classList.add('hidden');
+                    Scrapbook.refresh();
+                });
+            },
+
+            openCakeModal() {
+                document.getElementById('cake-modal').classList.remove('hidden');
+            },
+
+            // 5. Gửi lời chúc cho bé Tôm
+            initWishSender() {
+                const modal = document.getElementById('wish-modal');
+                const textarea = document.getElementById('wish-input');
+                const charCount = document.getElementById('wish-char-count');
+
+                textarea.addEventListener('input', () => {
+                    charCount.textContent = textarea.value.length;
+                });
+
+                // Chọn nhanh chủ đề lời chúc
+                const topicWishes = {
+                    'Sức khỏe': 'Chúc bé Tôm luôn khỏe mạnh, ăn ngoan chóng lớn và tràn đầy năng lượng!',
+                    'Bình an': 'Chúc con một đời bình an, được chở che trong vòng tay yêu thương của ba mẹ!',
+                    'Học hỏi': 'Chúc hoàng tử nhỏ Tôm thông minh, sáng dạ và luôn tò mò học hỏi muôn điều!',
+                    'Khám phá': 'Chúc Tôm thỏa sức khám phá thế giới diệu kỳ với nụ cười rạng rỡ trên môi!',
+                    'Gia đình': 'Chúc tổ ấm của Tôm luôn tràn ngập tiếng cười, hạnh phúc và ấm áp!',
+                    'Hạnh phúc': 'Chúc bé Tôm mỗi ngày đều là một ngày vui, rộn rã nụ cười xinh!'
+                };
+
+                document.querySelectorAll('.wish-topic-tag').forEach(tag => {
+                    tag.addEventListener('click', () => {
+                        document.querySelectorAll('.wish-topic-tag').forEach(t => t.classList.remove('active'));
+                        tag.classList.add('active');
+                        textarea.value = topicWishes[tag.dataset.topic] || '';
+                        charCount.textContent = textarea.value.length;
+                    });
+                });
+
+                const saveAndDeliverWish = (mode) => {
+                    let text = textarea.value.trim();
+                    if (!text) {
+                        showToast('⚠️ Bạn hãy nhập hoặc chọn một lời chúc cho Tôm nhé!');
+                        return;
+                    }
+
+                    // Lọc từ ngữ tục tĩu
+                    const lower = text.toLowerCase();
+                    for (const bad of PROFANITY_WORDS) {
+                        if (lower.includes(bad)) {
+                            text = text.replace(new RegExp(bad, 'gi'), '***');
+                        }
+                    }
+
+                    const wishObj = {
+                        author: StorageManager.data.playerName,
+                        text: text,
+                        date: new Date().toLocaleDateString('vi-VN'),
+                        mode: mode
+                    };
+
+                    StorageManager.data.wishesList.unshift(wishObj);
+                    StorageManager.data.completedActivities.wish = true;
+                    StorageManager.save();
+                    Scrapbook.refresh();
+
+                    modal.classList.add('hidden');
+                    textarea.value = '';
+                    charCount.textContent = '0';
+
+                    if (mode === 'balloon') {
+                        this.animateWishBalloon(text);
+                    } else {
+                        audio.playSfx('chime');
+                        showToast('💌 Lời chúc của bạn đã được gửi an toàn vào Hộp thư sinh nhật của Tôm!');
+                    }
+                };
+
+                document.getElementById('btn-send-wish-balloon').addEventListener('click', () => saveAndDeliverWish('balloon'));
+                document.getElementById('btn-send-wish-mailbox').addEventListener('click', () => saveAndDeliverWish('mailbox'));
+            },
+
+            openWishModal() {
+                document.getElementById('wish-modal').classList.remove('hidden');
+            },
+
+            // Hoạt ảnh 3D bóng bay lời chúc bay lên trời
+            animateWishBalloon(text) {
+                audio.playSfx('chime');
+                const pPos = player.group.position;
+                const b = new THREE.Mesh(
+                    new THREE.SphereGeometry(1.2, 16, 16),
+                    new THREE.MeshLambertMaterial({ color: 0xFF6B6B })
+                );
+                b.position.set(pPos.x, 2, pPos.z);
+                b.scale.set(1, 1.25, 1);
+                scene.add(b);
+
+                let progress = 0;
+                const flyInterval = setInterval(() => {
+                    progress += 0.02;
+                    b.position.y += 0.25;
+                    b.position.x += Math.sin(progress * 5) * 0.05;
+                    if (b.position.y > 40) {
+                        clearInterval(flyInterval);
+                        scene.remove(b);
+                    }
+                }, 30);
+            },
+
+            // 11. Chia sẻ ảnh sinh nhật (Poster Generator 1080x1350)
+            openShareModal() {
+                SharePosterGenerator.generate((dataUrl) => {
+                    const modal = document.getElementById('share-modal');
+                    const preview = document.getElementById('share-canvas-preview');
+                    preview.src = dataUrl;
+                    modal.classList.remove('hidden');
+                });
+            }
+        };
+
+        /* ==========================================================================
+           17. SỔ LƯU NIỆM (MEMORY BOOK - SCRAPBOOK)
+           ========================================================================== */
+        const Scrapbook = {
+            init() {
+                document.getElementById('hud-btn-scrapbook').addEventListener('click', () => {
+                    this.open();
+                });
+
+                // Chuyển tab
+                document.querySelectorAll('.scrapbook-tab-btn').forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        document.querySelectorAll('.scrapbook-tab-btn').forEach(b => b.classList.remove('active'));
+                        document.querySelectorAll('.scrapbook-content').forEach(c => c.style.display = 'none');
+
+                        btn.classList.add('active');
+                        const targetTab = document.getElementById(btn.dataset.tab);
+                        if (targetTab) targetTab.style.display = 'block';
+                    });
+                });
+
+                document.getElementById('btn-reset-storage').addEventListener('click', () => {
+                    if (confirm('Bạn có chắc chắn muốn xóa toàn bộ dữ liệu kỷ niệm và chơi lại từ đầu?')) {
+                        StorageManager.reset();
+                    }
+                });
+            },
+
+            open() {
+                this.refresh();
+                document.getElementById('scrapbook-modal').classList.remove('hidden');
+            },
+
+            refresh() {
+                const data = StorageManager.data;
+                document.getElementById('sb-player-name').textContent = data.playerName;
+                document.getElementById('sb-visit-count').textContent = data.visitsCount;
+                document.getElementById('sb-balloons-caught').textContent = data.balloonsCaughtRecord;
+                document.getElementById('sb-wish-count').textContent = data.wishesList.length;
+                document.getElementById('sb-gift-count').textContent = data.openedGifts.length;
+
+                // Danh sách lời chúc
+                const listEl = document.getElementById('sb-wishes-list');
+                if (data.wishesList.length === 0) {
+                    listEl.innerHTML = '<p style="color: var(--sub-text); text-align: center; margin-top: 30px;">Chưa có lời chúc nào. Hãy gửi một lời chúc cho Tôm nhé!</p>';
+                } else {
+                    listEl.innerHTML = data.wishesList.map(w => `
+                        <div class="wish-item-card">
+                            <div class="wish-item-header">
+                                <span>💌 ${w.author}</span>
+                                <span>${w.date}</span>
+                            </div>
+                            <p style="font-size: 14px; font-weight: 700; color: #2C3E50;">"${w.text}"</p>
+                        </div>
+                    `).join('');
+                }
+
+                // Lưới quà tặng
+                const giftsGrid = document.getElementById('sb-gifts-grid');
+                giftsGrid.innerHTML = World.giftBoxes.map(g => {
+                    const isOpened = data.openedGifts.includes(g.id);
+                    return `
+                        <div style="background: white; border-radius: 12px; padding: 10px; text-align: center; border: 2px solid ${isOpened ? '#89CFF0' : '#E2E8F0'}; opacity: ${isOpened ? 1 : 0.6};">
+                            <div style="font-size: 32px;">${isOpened ? g.info.icon : '🔒'}</div>
+                            <p style="font-size: 12px; font-weight: 800; color: #2C3E50; margin-top: 4px;">${g.info.title}</p>
+                        </div>
+                    `;
+                }).join('');
+
+                // Checklist hoạt động
+                const acts = data.completedActivities;
+                const checkListEl = document.getElementById('sb-activities-checklist');
+                checkListEl.innerHTML = `
+                    <li>${acts.candles ? '✅' : '⚪'} Thổi nến sinh nhật cùng Tôm</li>
+                    <li>${acts.gifts ? '✅' : '⚪'} Mở quà bí mật (${data.openedGifts.length}/6)</li>
+                    <li>${acts.balloons ? '✅' : '⚪'} Hứng bóng bay vui nhộn (Kỷ lục: ${data.balloonsCaughtRecord})</li>
+                    <li>${acts.cake ? '✅' : '⚪'} Trang trí bánh sinh nhật</li>
+                    <li>${acts.wish ? '✅' : '⚪'} Gửi lời chúc vào sổ lưu niệm</li>
+                `;
+            }
+        };
+
+        /* ==========================================================================
+           18. CHIA SẺ ẢNH SINH NHẬT (POSTER GENERATOR 1080x1350 DỌC SIÊU NÉT)
+           ========================================================================== */
+        const SharePosterGenerator = {
+            init() {
+                document.getElementById('hud-btn-photo').addEventListener('click', () => {
+                    Activities.openShareModal();
+                });
+
+                document.getElementById('btn-download-poster').addEventListener('click', () => {
+                    this.downloadPNG();
+                });
+
+                document.getElementById('btn-native-share').addEventListener('click', () => {
+                    this.nativeShare();
+                });
+            },
+
+            generate(callback) {
+                // Tạm thời render cảnh chụp từ góc sân khấu đẹp nhất
+                const origPos = camera.position.clone();
+                const origLook = playerController.cameraTarget.clone();
+
+                // Đặt camera đối diện bánh kem và Tôm
+                camera.position.set(0, 2.4, -9.5);
+                camera.lookAt(0, 1.6, -13);
+                renderer.render(scene, camera);
+
+                // Lấy ảnh 3D snapshot từ Three.js canvas
+                const snapshotUrl = renderer.domElement.toDataURL('image/png');
+
+                // Phục hồi camera
+                camera.position.copy(origPos);
+                camera.lookAt(origLook);
+
+                // Vẽ Poster 1080x1350 trên canvas 2D
+                const pCanvas = document.createElement('canvas');
+                pCanvas.width = 1080;
+                pCanvas.height = 1350;
+                const ctx = pCanvas.getContext('2d');
+
+                // Nền Pastel sang trọng
+                const bgGrad = ctx.createLinearGradient(0, 0, 0, 1350);
+                bgGrad.addColorStop(0, '#E0F2FE');
+                bgGrad.addColorStop(0.3, '#FFFDF0');
+                bgGrad.addColorStop(1, '#FDE8E9');
+                ctx.fillStyle = bgGrad;
+                ctx.fillRect(0, 0, 1080, 1350);
+
+                // Khung viền vàng champagne đôi
+                ctx.strokeStyle = '#F5D061';
+                ctx.lineWidth = 14;
+                ctx.strokeRect(36, 36, 1008, 1278);
+                ctx.strokeStyle = '#FFFFFF';
+                ctx.lineWidth = 6;
+                ctx.strokeRect(54, 54, 972, 1242);
+
+                // Header Poster
+                ctx.fillStyle = '#4A90E2';
+                ctx.font = '900 42px Nunito, sans-serif';
+                ctx.textAlign = 'center';
+                ctx.fillText("TOM'S MAGICAL BIRTHDAY", 540, 120);
+
+                ctx.fillStyle = '#C68B59';
+                ctx.font = '800 28px Nunito, sans-serif';
+                ctx.fillText('ĐẠI TIỆC THÔI NÔI 1 TUỔI • 13/11/2025', 540, 165);
+
+                // Vẽ ảnh snapshot 3D ở giữa
+                const snapImg = new Image();
+                snapImg.onload = () => {
+                    // Bo góc ảnh chụp
+                    ctx.save();
+                    ctx.beginPath();
+                    ctx.roundRect(90, 210, 900, 680, 28);
+                    ctx.clip();
+                    ctx.drawImage(snapImg, 90, 210, 900, 680);
+                    ctx.restore();
+
+                    // Viền ảnh chụp
+                    ctx.strokeStyle = '#FFFFFF';
+                    ctx.lineWidth = 8;
+                    ctx.strokeRect(90, 210, 900, 680);
+
+                    // Khách mời danh dự
+                    ctx.fillStyle = '#2C3E50';
+                    ctx.font = '900 36px Nunito, sans-serif';
+                    ctx.fillText(`Khách mời danh dự: ${StorageManager.data.playerName}`, 540, 950);
+
+                    // Lời chúc mới nhất
+                    const lastWish = StorageManager.data.wishesList[0]?.text || 'Chúc bé Tôm tuổi mới luôn khỏe mạnh, vui vẻ và lớn lên trong tình yêu thương!';
+                    ctx.fillStyle = '#64748B';
+                    ctx.font = 'italic 700 26px Nunito, sans-serif';
+                    ctx.fillText(`"${lastWish.substring(0, 75)}${lastWish.length > 75 ? '...' : ''}"`, 540, 1010);
+
+                    // Dấu sáp chứng nhận thôi nôi
+                    ctx.fillStyle = '#F5D061';
+                    ctx.beginPath();
+                    ctx.arc(540, 1140, 65, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.strokeStyle = '#FFFFFF';
+                    ctx.lineWidth = 4;
+                    ctx.stroke();
+
+                    ctx.fillStyle = '#7A4B00';
+                    ctx.font = '900 18px Nunito, sans-serif';
+                    ctx.fillText('CHỨNG NHẬN', 540, 1130);
+                    ctx.font = '900 24px Nunito, sans-serif';
+                    ctx.fillText('TOM 1 TUỔI', 540, 1160);
+
+                    // Footer
+                    ctx.fillStyle = '#94A3B8';
+                    ctx.font = '600 20px Nunito, sans-serif';
+                    ctx.fillText('Phạm Hoàng Minh Trí (Tôm) • 13/11/2025 • Tình Yêu Gia Đình Vô Bờ Bến', 540, 1260);
+
+                    this.lastGeneratedUrl = pCanvas.toDataURL('image/png');
+                    callback(this.lastGeneratedUrl);
+                };
+                snapImg.src = snapshotUrl;
+            },
+
+            downloadPNG() {
+                if (!this.lastGeneratedUrl) return;
+                const a = document.createElement('a');
+                a.href = this.lastGeneratedUrl;
+                a.download = `Tom_Magical_Birthday_${Date.now()}.png`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+            },
+
+            async nativeShare() {
+                if (!this.lastGeneratedUrl) return;
+                try {
+                    // Chuyển DataURL thành Blob để dùng Web Share API
+                    const res = await fetch(this.lastGeneratedUrl);
+                    const blob = await res.blob();
+                    const file = new File([blob], 'Tom_Birthday_Memory.png', { type: 'image/png' });
+
+                    if (navigator.canShare && navigator.canShare({ files: [file] })) {
+                        await navigator.share({
+                            title: "Tom's Magical Birthday 1 Tuổi",
+                            text: `Mình vừa dự tiệc sinh nhật 1 tuổi của bé Tôm (Phạm Hoàng Minh Trí)!`,
+                            files: [file]
+                        });
+                    } else if (navigator.share) {
+                        await navigator.share({
+                            title: "Tom's Magical Birthday 1 Tuổi",
+                            text: `Chúc mừng sinh nhật 1 tuổi của bé Tôm!`,
+                            url: window.location.href
+                        });
+                    } else {
+                        this.downloadPNG();
+                    }
+                } catch (e) {
+                    this.downloadPNG();
+                }
+            }
+        };
+
+        /* ==========================================================================
+           8. SỰ KIỆN ĐẶC BIỆT: "KHOẢNH KHẮC SINH NHẬT" (GRAND BIRTHDAY MOMENT)
+           ========================================================================== */
+        function triggerSpecialBirthdayMoment() {
+            audio.playHappyBirthdayTune();
+            audio.playSfx('applause');
+            aiGuestManager.gatherAtStage();
+
+            // Hạ bớt ánh sáng môi trường để đèn sân khấu rực rỡ
+            ambientLight.intensity = 0.4;
+            dirLight.intensity = 0.6;
+            stageSpotLight1.intensity = 4.0;
+            stageSpotLight2.intensity = 4.0;
+
+            // Đưa camera về góc nhìn toàn cảnh sân khấu
+            player.group.position.set(0, 0, -8);
+            playerController.cameraAngle.theta = 0;
+            playerController.cameraAngle.phi = 0.25;
+
+            document.getElementById('moment-modal').classList.remove('hidden');
+
+            document.getElementById('btn-moment-close').onclick = () => {
+                document.getElementById('moment-modal').classList.add('hidden');
+                ambientLight.intensity = 0.85;
+                dirLight.intensity = 1.2;
+                stageSpotLight1.intensity = 2.5;
+                stageSpotLight2.intensity = 2.0;
+            };
+        }
+
+        /* ==========================================================================
+           2. KHỞI TẠO CÁC NÚT BẤM VÀ LUỒNG VÀO TIỆC (WELCOME & GUIDE FLOW)
+           ========================================================================== */
+        // Khởi tạo các đối tượng toàn cục
+        let player = null;
+        let tom = null;
+        let playerController = null;
+        let aiGuestManager = null;
+
+        function initApp() {
+            // Xây dựng thế giới
+            World.build();
+
+            // Tạo nhân vật Tôm trung tâm
+            tom = new TomCharacter();
+
+            // Tạo nhân vật người chơi
+            const savedColor = StorageManager.data.outfitColor || '#89CFF0';
+            player = new ChibiCharacter(StorageManager.data.playerName, savedColor, true);
+            player.group.position.set(0, 0, 18); // Bắt đầu ở gần cổng chào trên thảm đỏ
+            player.group.rotation.y = Math.PI; // Nhìn thẳng vào hoa viên và sân khấu bánh kem
+
+            playerController = new PlayerController(player);
+            InteractionSystem.init();
+
+            // Tạo các khách mời AI
+            aiGuestManager = new AIGuestManager();
+            aiGuestManager.init();
+
+            // Khởi tạo các hệ thống
+            Activities.init();
+            Scrapbook.init();
+            SharePosterGenerator.init();
+
+            // Đóng các modal khi bấm nút X
+            document.querySelectorAll('.btn-modal-close').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const targetId = btn.dataset.close;
+                    if (targetId) {
+                        document.getElementById(targetId).classList.add('hidden');
+                    }
+                });
+            });
+
+            // Chọn màu trang phục ở màn hình mở đầu
+            document.querySelectorAll('#outfit-color-picker .color-dot').forEach(dot => {
+                dot.addEventListener('click', () => {
+                    document.querySelectorAll('#outfit-color-picker .color-dot').forEach(d => d.classList.remove('active'));
+                    dot.classList.add('active');
+                    const color = dot.dataset.color;
+                    StorageManager.data.outfitColor = color;
+                    player.setOutfitColor(color);
+                });
+            });
+
+            // Nút "Vào Tiệc Ngay"
+            document.getElementById('btn-enter-party').addEventListener('click', () => {
+                const nameInput = document.getElementById('player-name-input').value.trim() || 'Khách Quý';
+                StorageManager.data.playerName = nameInput;
+                StorageManager.save();
+
+                document.getElementById('hud-player-name').textContent = nameInput;
+
+                // Khởi tạo Web Audio ngay lần chạm đầu tiên
+                audio.init();
+                audio.startBgm();
+
+                // Ẩn màn hình mở đầu
+                document.getElementById('welcome-modal').classList.add('hidden');
+
+                // Nếu là lần đầu hoặc cần xem hướng dẫn
+                if (StorageManager.data.visitsCount <= 1) {
+                    showGuideModal();
+                } else {
+                    document.getElementById('game-hud').style.display = 'flex';
+                }
+            });
+
+            // Nút điều khiển âm thanh trên HUD
+            const soundBtn = document.getElementById('hud-btn-sound');
+            soundBtn.addEventListener('click', () => {
+                const isMuted = audio.toggleMute();
+                soundBtn.textContent = isMuted ? '🔇' : '🔊';
+            });
+
+            // Nút quay về sân khấu
+            document.getElementById('hud-btn-stage').addEventListener('click', () => {
+                player.group.position.set(0, 0, -8);
+                player.group.rotation.y = 0;
+                audio.playSfx('chime');
+            });
+
+            // Hướng dẫn 3 bước
+            initGuideModal();
+
+            // Theo dõi trạng thái offline
+            window.addEventListener('offline', () => {
+                document.getElementById('offline-alert').style.display = 'block';
+            });
+            window.addEventListener('online', () => {
+                document.getElementById('offline-alert').style.display = 'none';
+            });
+
+            // Xử lý resize màn hình
+            window.addEventListener('resize', onWindowResize);
+        }
+
+        function showGuideModal() {
+            document.getElementById('guide-modal').classList.remove('hidden');
+        }
+
+        function initGuideModal() {
+            let step = 1;
+            const steps = [
+                document.getElementById('guide-step-1'),
+                document.getElementById('guide-step-2'),
+                document.getElementById('guide-step-3')
+            ];
+            const nextBtn = document.getElementById('btn-guide-next');
+            const skipBtn = document.getElementById('btn-guide-skip');
+
+            const finishGuide = () => {
+                document.getElementById('guide-modal').classList.add('hidden');
+                document.getElementById('game-hud').style.display = 'flex';
+            };
+
+            nextBtn.addEventListener('click', () => {
+                step++;
+                if (step > 3) {
+                    finishGuide();
+                } else {
+                    steps.forEach((s, idx) => s.classList.toggle('active', idx === step - 1));
+                    if (step === 3) nextBtn.textContent = 'Bắt đầu ngay 🎉';
+                }
+            });
+
+            skipBtn.addEventListener('click', finishGuide);
+        }
+
+        function onWindowResize() {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        }
+
+        /* ==========================================================================
+           20. VÒNG LẶP RENDER HOẠT HỌA CHÍNH (MAIN ANIMATION LOOP)
+           ========================================================================== */
+        const clock = new THREE.Clock();
+
+        function animate() {
+            requestAnimationFrame(animate);
+
+            const delta = Math.min(clock.getDelta(), 0.1);
+
+            // Cập nhật người chơi
+            if (playerController) {
+                playerController.update(delta);
+            }
+
+            // Cập nhật nhân vật Tôm
+            if (tom) {
+                tom.update(delta);
+            }
+
+            // Cập nhật khách mời AI
+            if (aiGuestManager) {
+                aiGuestManager.update(delta);
+            }
+
+            // Cập nhật thế giới môi trường
+            World.update(delta);
+
+            // Cập nhật bóng bay mini-game
+            Activities.updateFallingBalloons(delta);
+
+            // Kiểm tra tương tác với các vật thể quanh người chơi
+            if (player) {
+                InteractionSystem.checkProximity(player.group.position);
+            }
+
+            renderer.render(scene, camera);
+        }
+
+        // Bắt đầu game
+        initApp();
+        animate();
+
+        // Expose modules to window for interaction and automated testing
+        window.World = World;
+        window.Activities = Activities;
+        window.StorageManager = StorageManager;
+        window.InteractionSystem = InteractionSystem;
+        window.Scrapbook = Scrapbook;
+        window.SharePosterGenerator = SharePosterGenerator;
+        window.triggerSpecialBirthdayMoment = triggerSpecialBirthdayMoment;
+        window.audio = audio;
+        window.player = player;
+        window.tom = tom;
+        window.aiGuestManager = aiGuestManager;
+    </script>
+</body>
+</html>

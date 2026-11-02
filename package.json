@@ -1,0 +1,19 @@
+{
+  "name": "toms-magical-birthday",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Tom's Magical Birthday – 3D Online Birthday Game cho bé Phạm Hoàng Minh Trí (13/11/2025)",
+  "scripts": {
+    "start": "npx serve .",
+    "test": "node test/e2e_cdp_test.js"
+  },
+  "keywords": [
+    "threejs",
+    "birthday",
+    "3d-game",
+    "chibi",
+    "web-audio"
+  ],
+  "author": "",
+  "license": "MIT"
+}
