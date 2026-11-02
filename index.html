@@ -1737,6 +1737,7 @@
         const World = {
             colliders: [],
             decorations: [],
+            animatedProps: [],
             balloons: [],
             giftBoxes: [],
             interactiveObjects: [],
@@ -1753,6 +1754,9 @@
 
                 // Hàng rào gỗ pastel bao quanh
                 this.buildFence();
+
+                // Cây xanh hoàng gia 3D bao quanh khuôn viên
+                this.buildTrees();
 
                 // 1. CỔNG CHÀO SINH NHẬT (Z = 24 đến 28)
                 this.buildEntranceGate();
@@ -1803,30 +1807,136 @@
                 this.colliders.push({ x, z, r: 0.5 });
             },
 
-            // 1. Cổng chào sinh nhật
+            // Cây xanh hoàng gia 3D bao quanh khuôn viên vườn hoa
+            buildTrees() {
+                if (!CharacterAssetManager.isReady || !CharacterAssetManager.cache.has('tree')) return;
+
+                const treePositions = [];
+
+                // Viền phía Bắc (Z = -23)
+                for (let x = -24; x <= 24; x += 6) {
+                    treePositions.push({ x: x, z: -23 + ((Math.abs(x) % 4 === 0) ? 0.8 : -0.5) });
+                }
+
+                // Viền phía Nam (Z = 28, chừa cổng lối đi x từ -5 đến 5)
+                for (let x = -24; x <= 24; x += 6) {
+                    if (Math.abs(x) < 5) continue;
+                    treePositions.push({ x: x, z: 28 + ((Math.abs(x) % 4 === 0) ? -0.6 : 0.6) });
+                }
+
+                // Viền phía Tây (X = -25)
+                for (let z = -18; z <= 24; z += 6) {
+                    treePositions.push({ x: -25 + ((Math.abs(z) % 4 === 0) ? 0.7 : -0.5), z: z });
+                }
+
+                // Viền phía Đông (X = 25)
+                for (let z = -18; z <= 24; z += 6) {
+                    treePositions.push({ x: 25 + ((Math.abs(z) % 4 === 0) ? -0.7 : 0.5), z: z });
+                }
+
+                treePositions.forEach((pos, idx) => {
+                    const tree = CharacterAssetManager.createInstance('tree');
+                    if (tree) {
+                        const scale = 1.8 + ((idx * 7) % 5) * 0.12; // 1.8 đến 2.3
+                        tree.root.scale.set(scale, scale, scale);
+                        tree.root.position.set(pos.x, 0, pos.z);
+                        tree.root.rotation.y = (idx * 1.3) % (Math.PI * 2);
+                        scene.add(tree.root);
+                        this.colliders.push({ x: pos.x, z: pos.z, r: 0.9 });
+                    }
+                });
+            },
+
+            // 1. Cổng chào sinh nhật hoàng gia
             buildEntranceGate() {
                 const gateGroup = new THREE.Group();
                 gateGroup.position.set(0, 0, 24);
 
-                // Cổng vòm pastel cầu vồng
-                const archMat = new THREE.MeshLambertMaterial({ color: 0x89CFF0 });
-                const torusGeo = new THREE.TorusGeometry(3.8, 0.45, 12, 32, Math.PI);
-                const arch = new THREE.Mesh(torusGeo, archMat);
-                arch.position.y = 3.8;
-                gateGroup.add(arch);
-
-                // 2 Cột bóng bay xoắn ốc
-                const colors = [0xFFD1DC, 0x89CFF0, 0xF5D061, 0xFFFFFF];
-                [-3.8, 3.8].forEach(xOffset => {
-                    for (let y = 0.5; y <= 3.8; y += 0.5) {
-                        const bGeo = new THREE.SphereGeometry(0.35, 12, 12);
-                        const bMat = new THREE.MeshLambertMaterial({ color: colors[Math.floor(y * 2) % colors.length] });
-                        const b = new THREE.Mesh(bGeo, bMat);
-                        b.position.set(xOffset + Math.sin(y * 3) * 0.15, y, Math.cos(y * 3) * 0.15);
-                        gateGroup.add(b);
+                let has3DGate = false;
+                if (CharacterAssetManager.isReady && CharacterAssetManager.cache.has('wall-gate')) {
+                    // Cổng thành hoàng gia
+                    const gate = CharacterAssetManager.createInstance('wall-gate');
+                    if (gate) {
+                        gate.root.scale.set(2.4, 2.4, 2.4);
+                        gateGroup.add(gate.root);
+                        has3DGate = true;
                     }
-                    this.colliders.push({ x: xOffset, z: 24, r: 0.9 });
-                });
+
+                    // Tường thành 2 bên tháp cổng
+                    const leftWall = CharacterAssetManager.createInstance('wall');
+                    if (leftWall) {
+                        leftWall.root.scale.set(2.4, 2.4, 2.4);
+                        leftWall.root.position.set(-4.8, 0, 0);
+                        gateGroup.add(leftWall.root);
+                    }
+                    const rightWall = CharacterAssetManager.createInstance('wall');
+                    if (rightWall) {
+                        rightWall.root.scale.set(2.4, 2.4, 2.4);
+                        rightWall.root.position.set(4.8, 0, 0);
+                        gateGroup.add(rightWall.root);
+                    }
+
+                    // Cờ hội sinh nhật trên 2 tháp cổng
+                    const bannerL = CharacterAssetManager.createInstance('banner');
+                    if (bannerL) {
+                        bannerL.root.scale.set(1.6, 1.6, 1.6);
+                        bannerL.root.position.set(-2.4, 4.3, 0.1);
+                        gateGroup.add(bannerL.root);
+                    }
+                    const bannerR = CharacterAssetManager.createInstance('banner');
+                    if (bannerR) {
+                        bannerR.root.scale.set(1.6, 1.6, 1.6);
+                        bannerR.root.position.set(2.4, 4.3, 0.1);
+                        gateGroup.add(bannerR.root);
+                    }
+
+                    // 2 Vệ binh hoàng gia tí hon đứng gác chào mừng
+                    const soldierL = CharacterAssetManager.createInstance('character-soldier');
+                    if (soldierL) {
+                        soldierL.root.scale.set(1.7, 1.7, 1.7);
+                        soldierL.root.position.set(-2.2, 0, 1.5);
+                        soldierL.root.rotation.y = Math.PI / 6;
+                        if (soldierL.actions.has('emote-yes')) soldierL.actions.get('emote-yes').play();
+                        else if (soldierL.actions.has('idle')) soldierL.actions.get('idle').play();
+                        gateGroup.add(soldierL.root);
+                        this.animatedProps.push(soldierL);
+                    }
+                    const soldierR = CharacterAssetManager.createInstance('character-soldier');
+                    if (soldierR) {
+                        soldierR.root.scale.set(1.7, 1.7, 1.7);
+                        soldierR.root.position.set(2.2, 0, 1.5);
+                        soldierR.root.rotation.y = -Math.PI / 6;
+                        if (soldierR.actions.has('idle')) soldierR.actions.get('idle').play();
+                        gateGroup.add(soldierR.root);
+                        this.animatedProps.push(soldierR);
+                    }
+
+                    // Colliders cho 2 tháp cổng thành
+                    this.colliders.push({ x: -3.8, z: 24, r: 1.8 });
+                    this.colliders.push({ x: 3.8, z: 24, r: 1.8 });
+                }
+
+                if (!has3DGate) {
+                    // Fallback cổng vòm pastel cầu vồng
+                    const archMat = new THREE.MeshLambertMaterial({ color: 0x89CFF0 });
+                    const torusGeo = new THREE.TorusGeometry(3.8, 0.45, 12, 32, Math.PI);
+                    const arch = new THREE.Mesh(torusGeo, archMat);
+                    arch.position.y = 3.8;
+                    gateGroup.add(arch);
+
+                    // 2 Cột bóng bay xoắn ốc
+                    const colors = [0xFFD1DC, 0x89CFF0, 0xF5D061, 0xFFFFFF];
+                    [-3.8, 3.8].forEach(xOffset => {
+                        for (let y = 0.5; y <= 3.8; y += 0.5) {
+                            const bGeo = new THREE.SphereGeometry(0.35, 12, 12);
+                            const bMat = new THREE.MeshLambertMaterial({ color: colors[Math.floor(y * 2) % colors.length] });
+                            const b = new THREE.Mesh(bGeo, bMat);
+                            b.position.set(xOffset + Math.sin(y * 3) * 0.15, y, Math.cos(y * 3) * 0.15);
+                            gateGroup.add(b);
+                        }
+                        this.colliders.push({ x: xOffset, z: 24, r: 0.9 });
+                    });
+                }
 
                 // Chữ nổi trên cổng: HAPPY BIRTHDAY TOM (canvas texture trên biển hiệu)
                 const bannerCanvas = document.createElement('canvas');
@@ -1848,7 +1958,7 @@
                 const bannerGeo = new THREE.PlaneGeometry(5.2, 1.3);
                 const bannerMat = new THREE.MeshBasicMaterial({ map: bannerTex, transparent: true });
                 const bannerMesh = new THREE.Mesh(bannerGeo, bannerMat);
-                bannerMesh.position.set(0, 4.4, 0.1);
+                bannerMesh.position.set(0, 4.8, 0.2);
                 gateGroup.add(bannerMesh);
 
                 // Thảm đỏ dẫn từ cổng vào sân tiệc
@@ -1865,6 +1975,22 @@
 
             // 2. Sân tiệc sinh nhật & Gấu Teddy khổng lồ
             buildPartyCourtyard() {
+                // Dãy cột đá La Mã và viền đá trang hoàng dọc 2 bên thảm đỏ
+                if (CharacterAssetManager.isReady && CharacterAssetManager.cache.has('column')) {
+                    const columnZ = [20, 14, 8];
+                    columnZ.forEach(cz => {
+                        [-3.0, 3.0].forEach(cx => {
+                            const col = CharacterAssetManager.createInstance('column');
+                            if (col) {
+                                col.root.scale.set(1.8, 1.8, 1.8);
+                                col.root.position.set(cx, 0, cz);
+                                scene.add(col.root);
+                                this.colliders.push({ x: cx, z: cz, r: 0.9 });
+                            }
+                        });
+                    });
+                }
+
                 // Bàn tiệc tròn với khăn trải bàn pastel
                 const tableMat = new THREE.MeshLambertMaterial({ color: 0xFFFFFF });
                 const tableGeo = new THREE.CylinderGeometry(1.8, 1.8, 0.8, 24);
@@ -2066,6 +2192,48 @@
                 const chair2 = chair1.clone();
                 chair2.position.set(2.2, 0.6, -1);
                 stageGroup.add(chair2);
+
+                // Nâng cấp kiến trúc sân khấu hoàng gia bằng các tài nguyên 3D2
+                if (CharacterAssetManager.isReady) {
+                    // Bậc thang đá dẫn lên bục sân khấu từ thảm đỏ
+                    const stairs = CharacterAssetManager.createInstance('stairs');
+                    if (stairs) {
+                        stairs.root.scale.set(2.4, 1.2, 1.6);
+                        stairs.root.position.set(0, 0, 5.6);
+                        stairs.root.rotation.y = Math.PI;
+                        stageGroup.add(stairs.root);
+                    }
+
+                    // 2 Cột đá hoàng gia uy nghiêm 2 bên backdrop
+                    [-5.2, 5.2].forEach(cx => {
+                        const col = CharacterAssetManager.createInstance('column');
+                        if (col) {
+                            col.root.scale.set(2.2, 2.2, 2.2);
+                            col.root.position.set(cx, 0, -2.5);
+                            stageGroup.add(col.root);
+                        }
+                    });
+
+                    // 2 Cúp vàng vinh quang "TOM 1 TUỔI" 2 bên bục bánh kem
+                    [-3.2, 3.2].forEach(tx => {
+                        const trophy = CharacterAssetManager.createInstance('trophy');
+                        if (trophy) {
+                            trophy.root.scale.set(1.5, 1.5, 1.5);
+                            trophy.root.position.set(tx, 0.5, -0.8);
+                            stageGroup.add(trophy.root);
+                        }
+                    });
+
+                    // Cờ hội hoàng gia trên đỉnh 2 cột sân khấu
+                    [-5.2, 5.2].forEach(bx => {
+                        const banner = CharacterAssetManager.createInstance('banner');
+                        if (banner) {
+                            banner.root.scale.set(1.5, 1.5, 1.5);
+                            banner.root.position.set(bx, 4.8, -2.5);
+                            stageGroup.add(banner.root);
+                        }
+                    });
+                }
 
                 scene.add(stageGroup);
 
@@ -2295,6 +2463,18 @@
                     photoGroup.add(bCluster);
                 });
 
+                // Tượng hiệp sĩ hoàng gia kỷ niệm (Statue landmark)
+                if (CharacterAssetManager.isReady && CharacterAssetManager.cache.has('statue')) {
+                    const statue = CharacterAssetManager.createInstance('statue');
+                    if (statue) {
+                        statue.root.scale.set(1.8, 1.8, 1.8);
+                        statue.root.position.set(-2.8, 0, 1.0);
+                        statue.root.rotation.y = Math.PI / 4;
+                        photoGroup.add(statue.root);
+                        this.colliders.push({ x: 17 - 2.8, z: 1.0, r: 0.8 });
+                    }
+                }
+
                 scene.add(photoGroup);
                 this.colliders.push({ x: 17, z: 0, r: 2.5 });
 
@@ -2515,6 +2695,15 @@
                         f.rotation.z = Math.sin(time * 8 + idx) * 0.1;
                     });
                 }
+
+                // Cập nhật hoạt ảnh cho các vệ binh hoàng gia và đồ trang trí 3D
+                if (this.animatedProps) {
+                    this.animatedProps.forEach(prop => {
+                        if (prop && prop.mixer) {
+                            prop.mixer.update(delta);
+                        }
+                    });
+                }
             }
         };
 
@@ -2532,11 +2721,14 @@
                 'character-female-d', 'character-female-e', 'character-female-f'
             ],
             accessories: ['aid-glasses', 'aid-sunglasses', 'wheelchair'],
+            envModels: [
+                'wall-gate', 'wall', 'column', 'stairs', 'tree', 'banner', 'trophy', 'statue', 'character-soldier', 'border-straight'
+            ],
 
             async init(onProgress) {
                 if (this.isReady) return true;
                 this.loader = new GLTFLoader();
-                const loadList = [...this.models, ...this.accessories];
+                const loadList = [...this.models, ...this.accessories, ...this.envModels];
                 let loadedCount = 0;
 
                 const base64Data = window.KENNEY_MODELS_DATA;
@@ -2559,7 +2751,9 @@
                             });
                         } else {
                             // Tải qua giao thức HTTP / Web Server thông thường
-                            const encodedUrl = encodeURI(`3D/Models/GLB format/${name}.glb`);
+                            const isEnv = this.envModels.includes(name);
+                            const basePath = isEnv ? '3D2' : '3D';
+                            const encodedUrl = encodeURI(`${basePath}/Models/GLB format/${name}.glb`);
                             gltf = await this.loader.loadAsync(encodedUrl);
                         }
 
