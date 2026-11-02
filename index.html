@@ -1932,6 +1932,22 @@
 
             // 2. Sân tiệc sinh nhật & Gấu Teddy khổng lồ
             buildPartyCourtyard() {
+                // Dãy cột đá La Mã và viền đá trang hoàng dọc 2 bên thảm đỏ
+                if (CharacterAssetManager.isReady && CharacterAssetManager.cache.has('column')) {
+                    const columnZ = [20, 14, 8];
+                    columnZ.forEach(cz => {
+                        [-3.0, 3.0].forEach(cx => {
+                            const col = CharacterAssetManager.createInstance('column');
+                            if (col) {
+                                col.root.scale.set(1.8, 1.8, 1.8);
+                                col.root.position.set(cx, 0, cz);
+                                scene.add(col.root);
+                                this.colliders.push({ x: cx, z: cz, r: 0.9 });
+                            }
+                        });
+                    });
+                }
+
                 // Bàn tiệc tròn với khăn trải bàn pastel
                 const tableMat = new THREE.MeshLambertMaterial({ color: 0xFFFFFF });
                 const tableGeo = new THREE.CylinderGeometry(1.8, 1.8, 0.8, 24);
@@ -2133,6 +2149,48 @@
                 const chair2 = chair1.clone();
                 chair2.position.set(2.2, 0.6, -1);
                 stageGroup.add(chair2);
+
+                // Nâng cấp kiến trúc sân khấu hoàng gia bằng các tài nguyên 3D2
+                if (CharacterAssetManager.isReady) {
+                    // Bậc thang đá dẫn lên bục sân khấu từ thảm đỏ
+                    const stairs = CharacterAssetManager.createInstance('stairs');
+                    if (stairs) {
+                        stairs.root.scale.set(2.4, 1.2, 1.6);
+                        stairs.root.position.set(0, 0, 5.6);
+                        stairs.root.rotation.y = Math.PI;
+                        stageGroup.add(stairs.root);
+                    }
+
+                    // 2 Cột đá hoàng gia uy nghiêm 2 bên backdrop
+                    [-5.2, 5.2].forEach(cx => {
+                        const col = CharacterAssetManager.createInstance('column');
+                        if (col) {
+                            col.root.scale.set(2.2, 2.2, 2.2);
+                            col.root.position.set(cx, 0, -2.5);
+                            stageGroup.add(col.root);
+                        }
+                    });
+
+                    // 2 Cúp vàng vinh quang "TOM 1 TUỔI" 2 bên bục bánh kem
+                    [-3.2, 3.2].forEach(tx => {
+                        const trophy = CharacterAssetManager.createInstance('trophy');
+                        if (trophy) {
+                            trophy.root.scale.set(1.5, 1.5, 1.5);
+                            trophy.root.position.set(tx, 0.5, -0.8);
+                            stageGroup.add(trophy.root);
+                        }
+                    });
+
+                    // Cờ hội hoàng gia trên đỉnh 2 cột sân khấu
+                    [-5.2, 5.2].forEach(bx => {
+                        const banner = CharacterAssetManager.createInstance('banner');
+                        if (banner) {
+                            banner.root.scale.set(1.5, 1.5, 1.5);
+                            banner.root.position.set(bx, 4.8, -2.5);
+                            stageGroup.add(banner.root);
+                        }
+                    });
+                }
 
                 scene.add(stageGroup);
 
