@@ -2601,10 +2601,47 @@
                 this.group.position.set(1.4, 0.9, -14); // Đứng cạnh bánh sinh nhật trên sân khấu
                 this.animTime = 0;
                 this.isBlowing = false;
+                this.currentAnim = null;
+                this.currentAction = null;
                 this.initModel();
             }
 
             initModel() {
+                const instance = CharacterAssetManager.createInstance('character-male-b');
+                if (instance) {
+                    this.modelInstance = instance;
+                    this.mixer = instance.mixer;
+                    this.actions = instance.actions;
+
+                    // Tỉ lệ em bé 1 tuổi xinh xắn (~1.45x)
+                    instance.root.scale.set(1.45, 1.45, 1.45);
+                    this.group.add(instance.root);
+
+                    // Vương miện vàng hoàng tử nhí
+                    const crownMat = new THREE.MeshLambertMaterial({ color: 0xF5D061 });
+                    const crown = new THREE.Mesh(new THREE.CylinderGeometry(0.16, 0.12, 0.14, 5), crownMat);
+                    crown.position.set(0, 1.05, 0);
+                    this.group.add(crown);
+
+                    // Gấu bông Teddy mini bé ôm bên hông
+                    const miniBear = new THREE.Mesh(new THREE.SphereGeometry(0.14, 10, 10), new THREE.MeshLambertMaterial({ color: 0xC68B59 }));
+                    miniBear.position.set(-0.35, 0.45, 0.1);
+                    this.group.add(miniBear);
+
+                    // Hoạt ảnh vui tươi mừng sinh nhật
+                    if (this.actions.has('emote-yes')) {
+                        this.playAnimation('emote-yes');
+                    } else if (this.actions.has('idle')) {
+                        this.playAnimation('idle');
+                    }
+                } else {
+                    this.initProceduralModel();
+                }
+
+                scene.add(this.group);
+            }
+
+            initProceduralModel() {
                 // Tạo nhân vật bé Tôm Chibi đáng yêu
                 const skinMat = new THREE.MeshLambertMaterial({
                     map: createChibiFaceTexture('#FFAAA6', 'open')
@@ -2655,19 +2692,40 @@
                 const miniBear = new THREE.Mesh(new THREE.SphereGeometry(0.16, 10, 10), new THREE.MeshLambertMaterial({ color: 0xC68B59 }));
                 miniBear.position.set(-0.35, 0.4, 0.2);
                 this.group.add(miniBear);
+            }
 
-                scene.add(this.group);
+            playAnimation(name, duration = 0.25) {
+                if (!this.actions || !this.actions.has(name)) return;
+                const nextAction = this.actions.get(name);
+                if (this.currentAction === nextAction) return;
+
+                if (this.currentAction) {
+                    this.currentAction.fadeOut(duration);
+                }
+                nextAction.reset().fadeIn(duration).play();
+                this.currentAction = nextAction;
+                this.currentAnim = name;
             }
 
             update(delta) {
-                this.animTime += delta * 3.5;
-                // Bé Tôm nhún nhảy vẫy tay vui tươi
-                this.group.position.y = 0.9 + Math.abs(Math.sin(this.animTime)) * 0.08;
-                this.head.rotation.y = Math.sin(this.animTime * 0.7) * 0.2;
-                this.rightArm.rotation.z = Math.sin(this.animTime * 2) * 0.4;
+                if (this.mixer) {
+                    this.mixer.update(delta);
+                    if (this.isBlowing) {
+                        if (this.actions.has('interact-right') && this.currentAnim !== 'interact-right') {
+                            this.playAnimation('interact-right', 0.2);
+                        }
+                    } else if (this.currentAnim === 'interact-right') {
+                        this.playAnimation('emote-yes', 0.3);
+                    }
+                } else if (this.head) {
+                    this.animTime += delta * 3.5;
+                    this.group.position.y = 0.9 + Math.abs(Math.sin(this.animTime)) * 0.08;
+                    this.head.rotation.y = Math.sin(this.animTime * 0.7) * 0.2;
+                    this.rightArm.rotation.z = Math.sin(this.animTime * 2) * 0.4;
 
-                if (this.isBlowing) {
-                    this.head.rotation.x = 0.2;
+                    if (this.isBlowing) {
+                        this.head.rotation.x = 0.2;
+                    }
                 }
             }
         }
