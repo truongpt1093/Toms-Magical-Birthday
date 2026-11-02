@@ -3118,6 +3118,24 @@
                     const color = palette[i % palette.length];
                     const guest = new ChibiCharacter(`Khách #${i + 1}`, color, false);
                     
+                    // Thêm phụ kiện phong phú (kính mát, kính cận)
+                    if (CharacterAssetManager.isReady) {
+                        const rand = Math.random();
+                        if (rand < 0.15 && CharacterAssetManager.cache.has('aid-sunglasses')) {
+                            const glasses = CharacterAssetManager.createInstance('aid-sunglasses');
+                            if (glasses) {
+                                glasses.root.scale.set(1.7, 1.7, 1.7);
+                                guest.group.add(glasses.root);
+                            }
+                        } else if (rand < 0.30 && CharacterAssetManager.cache.has('aid-glasses')) {
+                            const glasses = CharacterAssetManager.createInstance('aid-glasses');
+                            if (glasses) {
+                                glasses.root.scale.set(1.7, 1.7, 1.7);
+                                guest.group.add(glasses.root);
+                            }
+                        }
+                    }
+
                     // Phân bố khách dạo chơi khắp vườn
                     const rx = (Math.random() - 0.5) * 36;
                     const rz = (Math.random() - 0.5) * 36;
@@ -3145,6 +3163,14 @@
                     const guest = new ChibiCharacter(`Khách Mới #${this.guests.length + 1}`, palette[i % palette.length], false);
                     // Xuất hiện từ cổng chào (Z = 28)
                     guest.group.position.set((Math.random() - 0.5) * 3, 0, 28 + Math.random() * 2);
+
+                    if (CharacterAssetManager.isReady && Math.random() < 0.25) {
+                        const glasses = CharacterAssetManager.createInstance('aid-sunglasses');
+                        if (glasses) {
+                            glasses.root.scale.set(1.7, 1.7, 1.7);
+                            guest.group.add(glasses.root);
+                        }
+                    }
 
                     this.guests.push({
                         chibi: guest,
@@ -3175,6 +3201,9 @@
                     g.targetPos.set(Math.cos(angle) * dist, 0, -13 + Math.sin(angle) * dist);
                     g.behavior = 'cheer';
                     g.stateTimer = 15;
+                    if (g.chibi.playAnimation) {
+                        g.chibi.playAnimation('walk');
+                    }
                 });
             }
 
@@ -3213,14 +3242,35 @@
                     // Hành vi: Nhảy theo nhạc (Dance)
                     else if (g.behavior === 'dance') {
                         g.chibi.isMoving = false;
-                        g.chibi.group.position.y = Math.abs(Math.sin(time * 6 + g.chibi.group.id)) * 0.12;
-                        g.chibi.head.rotation.y = Math.sin(time * 4) * 0.3;
+                        if (g.chibi.actions && g.chibi.actions.has('jump')) {
+                            if (g.chibi.currentAnim !== 'jump') {
+                                g.chibi.playAnimation('jump');
+                            }
+                        } else if (g.chibi.head) {
+                            g.chibi.group.position.y = Math.abs(Math.sin(time * 6 + g.chibi.group.id)) * 0.12;
+                            g.chibi.head.rotation.y = Math.sin(time * 4) * 0.3;
+                        }
                     }
                     // Hành vi: Vỗ tay hoan hô (Cheer)
                     else if (g.behavior === 'cheer') {
                         g.chibi.isMoving = false;
-                        g.chibi.leftArm.rotation.x = -Math.PI / 2 + Math.sin(time * 10) * 0.3;
-                        g.chibi.rightArm.rotation.x = -Math.PI / 2 - Math.sin(time * 10) * 0.3;
+                        if (g.chibi.actions && g.chibi.actions.has('emote-yes')) {
+                            if (g.chibi.currentAnim !== 'emote-yes') {
+                                g.chibi.playAnimation('emote-yes');
+                            }
+                        } else if (g.chibi.leftArm && g.chibi.rightArm) {
+                            g.chibi.leftArm.rotation.x = -Math.PI / 2 + Math.sin(time * 10) * 0.3;
+                            g.chibi.rightArm.rotation.x = -Math.PI / 2 - Math.sin(time * 10) * 0.3;
+                        }
+                    }
+                    // Hành vi: Trò chuyện (Chat)
+                    else if (g.behavior === 'chat') {
+                        g.chibi.isMoving = false;
+                        if (g.chibi.actions && g.chibi.actions.has('idle')) {
+                            if (g.chibi.currentAnim !== 'idle') {
+                                g.chibi.playAnimation('idle');
+                            }
+                        }
                     }
 
                     g.chibi.animateWalking(delta);
@@ -4021,7 +4071,14 @@
         let playerController = null;
         let aiGuestManager = null;
 
-        function initApp() {
+        async function initApp() {
+            // Tải trước và nạp sẵn toàn bộ mô hình 3D GLB & Animations
+            try {
+                await CharacterAssetManager.init();
+            } catch (err) {
+                console.warn('Lỗi khi tải asset 3D, chuyển sang chế độ hình khối dự phòng:', err);
+            }
+
             // Xây dựng thế giới
             World.build();
 
