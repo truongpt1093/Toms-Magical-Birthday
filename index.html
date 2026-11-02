@@ -4266,9 +4266,10 @@
         window.SharePosterGenerator = SharePosterGenerator;
         window.triggerSpecialBirthdayMoment = triggerSpecialBirthdayMoment;
         window.audio = audio;
-        window.player = player;
-        window.tom = tom;
-        window.aiGuestManager = aiGuestManager;
+        Object.defineProperty(window, 'player', { get: () => player, configurable: true });
+        Object.defineProperty(window, 'tom', { get: () => tom, configurable: true });
+        Object.defineProperty(window, 'aiGuestManager', { get: () => aiGuestManager, configurable: true });
+        Object.defineProperty(window, 'playerController', { get: () => playerController, configurable: true });
         window.CharacterAssetManager = CharacterAssetManager;
     </script>
 </body>

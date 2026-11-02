@@ -8,9 +8,11 @@ Trò chơi tái hiện một hoa viên sinh nhật rực rỡ sắc màu, phong 
 
 ## ✨ Điểm nổi bật kỹ thuật
 
-- **Một file duy nhất:** Toàn bộ game gói gọn trong file `index.html`.
-- **Zero Assets File:** 100% hình khối 3D tạo bằng Three.js Geometries; texture khuôn mặt, hoa cỏ, thảm đỏ sinh bằng Canvas 2D; âm thanh tổng hợp 100% qua Web Audio API (không tải bất kỳ ảnh, model hay file âm thanh nào từ bên ngoài).
-- **Thiết bị hỗ trợ:** Tối ưu hóa đặc biệt cho màn hình dọc điện thoại (Virtual Joystick) và máy tính bàn (WASD / Mũi tên + Chuột).
+- **Một file duy nhất:** Toàn bộ logic game gói gọn trong file `index.html`.
+- **Hệ thống nhân vật 3D sống động (Kenney Mini Characters):** Tích hợp 12 mẫu nhân vật GLB sinh động, 32 animation động học xương (đi bộ, nhún nhảy, vỗ tay, tương tác, xe lăn), hỗ trợ phụ kiện nón sinh nhật, vương miện và kính mát. Cơ chế cache thông minh qua `SkeletonUtils.clone` đảm bảo 60 FPS mượt mà.
+- **Dự phòng an toàn (Procedural Fallback):** Tự động sinh hình khối hình tròn/yếm baby nếu mở qua môi trường giới hạn không tải được file GLB.
+- **Điều khiển trực quan:** Hỗ trợ chuẩn xác bàn phím WASD / Mũi tên (A/D rẽ trái/phải camera-relative) và Virtual Joystick cảm ứng trên điện thoại.
+- **Âm thanh Web Audio:** 100% âm thanh chân thực tổng hợp qua Web Audio API.
 - **Lưu trữ dữ liệu:** Lưu trữ an toàn trên thiết bị người dùng qua `localStorage`.
 - **Xuất ảnh kỷ niệm:** Tạo thiệp dọc độ phân giải cao 1080×1350 với snapshot 3D thực tế, hỗ trợ Web Share API hoặc tải trực tiếp PNG.
 
