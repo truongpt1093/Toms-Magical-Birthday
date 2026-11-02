@@ -2676,7 +2676,7 @@
            5. CHARACTER BUILDER VÀ PLAYER CONTROLLER (ĐIỀU KHIỂN NGƯỜI CHƠI)
            ========================================================================== */
         class ChibiCharacter {
-            constructor(name, colorHex = '#89CFF0', isPlayer = false) {
+            constructor(name, colorHex = '#89CFF0', isPlayer = false, modelKey = null) {
                 this.name = name;
                 this.colorHex = colorHex;
                 this.isPlayer = isPlayer;
@@ -2684,11 +2684,43 @@
                 this.speed = 7.0;
                 this.isMoving = false;
                 this.walkCycle = 0;
+                this.currentAnim = null;
+                this.currentAction = null;
+                this.modelKey = modelKey || (isPlayer ? 'character-male-a' : CharacterAssetManager.getRandomCharacterKey());
 
                 this.initMesh();
             }
 
             initMesh() {
+                const instance = CharacterAssetManager.createInstance(this.modelKey);
+                if (instance) {
+                    this.modelInstance = instance;
+                    this.mixer = instance.mixer;
+                    this.actions = instance.actions;
+
+                    // Điều chỉnh tỉ lệ phù hợp không gian 3D (~1.7x)
+                    instance.root.scale.set(1.7, 1.7, 1.7);
+                    this.group.add(instance.root);
+
+                    // Khởi động hoạt ảnh đứng yên (idle)
+                    this.playAnimation('idle');
+
+                    // Nếu là người chơi, gắn nón sinh nhật xinh xắn
+                    if (this.isPlayer) {
+                        const hatMat = new THREE.MeshLambertMaterial({ color: 0xF5D061 });
+                        const hat = new THREE.Mesh(new THREE.ConeGeometry(0.14, 0.35, 12), hatMat);
+                        hat.position.set(0, 1.15, 0);
+                        this.group.add(hat);
+                    }
+                } else {
+                    // Fallback tự sinh bằng hình khối nếu không nạp được GLB
+                    this.initProceduralMesh();
+                }
+
+                scene.add(this.group);
+            }
+
+            initProceduralMesh() {
                 const skinMat = new THREE.MeshLambertMaterial({
                     map: createChibiFaceTexture('#FFAAA6', this.isPlayer ? 'happy' : 'smile')
                 });
@@ -2743,8 +2775,19 @@
                 this.rightArm = new THREE.Mesh(new THREE.CylinderGeometry(0.07, 0.07, 0.32, 8), skinMat);
                 this.rightArm.position.set(0.35, 0.55, 0);
                 this.group.add(this.rightArm);
+            }
 
-                scene.add(this.group);
+            playAnimation(name, duration = 0.2) {
+                if (!this.actions || !this.actions.has(name)) return;
+                const nextAction = this.actions.get(name);
+                if (this.currentAction === nextAction) return;
+
+                if (this.currentAction) {
+                    this.currentAction.fadeOut(duration);
+                }
+                nextAction.reset().fadeIn(duration).play();
+                this.currentAction = nextAction;
+                this.currentAnim = name;
             }
 
             setOutfitColor(hex) {
@@ -2755,6 +2798,23 @@
             }
 
             animateWalking(delta) {
+                if (this.mixer) {
+                    this.mixer.update(delta);
+                    if (this.isMoving) {
+                        if (this.currentAnim !== 'walk') {
+                            this.playAnimation('walk');
+                        }
+                    } else {
+                        if (this.currentAnim === 'walk' || this.currentAnim === 'sprint') {
+                            this.playAnimation('idle');
+                        }
+                    }
+                } else if (this.leftLeg) {
+                    this.animateProceduralWalking(delta);
+                }
+            }
+
+            animateProceduralWalking(delta) {
                 if (this.isMoving) {
                     this.walkCycle += delta * 12;
                     this.leftLeg.rotation.x = Math.sin(this.walkCycle) * 0.6;
