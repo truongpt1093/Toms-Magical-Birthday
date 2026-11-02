@@ -1737,6 +1737,7 @@
         const World = {
             colliders: [],
             decorations: [],
+            animatedProps: [],
             balloons: [],
             giftBoxes: [],
             interactiveObjects: [],
@@ -1803,30 +1804,96 @@
                 this.colliders.push({ x, z, r: 0.5 });
             },
 
-            // 1. Cổng chào sinh nhật
+            // 1. Cổng chào sinh nhật hoàng gia
             buildEntranceGate() {
                 const gateGroup = new THREE.Group();
                 gateGroup.position.set(0, 0, 24);
 
-                // Cổng vòm pastel cầu vồng
-                const archMat = new THREE.MeshLambertMaterial({ color: 0x89CFF0 });
-                const torusGeo = new THREE.TorusGeometry(3.8, 0.45, 12, 32, Math.PI);
-                const arch = new THREE.Mesh(torusGeo, archMat);
-                arch.position.y = 3.8;
-                gateGroup.add(arch);
-
-                // 2 Cột bóng bay xoắn ốc
-                const colors = [0xFFD1DC, 0x89CFF0, 0xF5D061, 0xFFFFFF];
-                [-3.8, 3.8].forEach(xOffset => {
-                    for (let y = 0.5; y <= 3.8; y += 0.5) {
-                        const bGeo = new THREE.SphereGeometry(0.35, 12, 12);
-                        const bMat = new THREE.MeshLambertMaterial({ color: colors[Math.floor(y * 2) % colors.length] });
-                        const b = new THREE.Mesh(bGeo, bMat);
-                        b.position.set(xOffset + Math.sin(y * 3) * 0.15, y, Math.cos(y * 3) * 0.15);
-                        gateGroup.add(b);
+                let has3DGate = false;
+                if (CharacterAssetManager.isReady && CharacterAssetManager.cache.has('wall-gate')) {
+                    // Cổng thành hoàng gia
+                    const gate = CharacterAssetManager.createInstance('wall-gate');
+                    if (gate) {
+                        gate.root.scale.set(2.4, 2.4, 2.4);
+                        gateGroup.add(gate.root);
+                        has3DGate = true;
                     }
-                    this.colliders.push({ x: xOffset, z: 24, r: 0.9 });
-                });
+
+                    // Tường thành 2 bên tháp cổng
+                    const leftWall = CharacterAssetManager.createInstance('wall');
+                    if (leftWall) {
+                        leftWall.root.scale.set(2.4, 2.4, 2.4);
+                        leftWall.root.position.set(-4.8, 0, 0);
+                        gateGroup.add(leftWall.root);
+                    }
+                    const rightWall = CharacterAssetManager.createInstance('wall');
+                    if (rightWall) {
+                        rightWall.root.scale.set(2.4, 2.4, 2.4);
+                        rightWall.root.position.set(4.8, 0, 0);
+                        gateGroup.add(rightWall.root);
+                    }
+
+                    // Cờ hội sinh nhật trên 2 tháp cổng
+                    const bannerL = CharacterAssetManager.createInstance('banner');
+                    if (bannerL) {
+                        bannerL.root.scale.set(1.6, 1.6, 1.6);
+                        bannerL.root.position.set(-2.4, 4.3, 0.1);
+                        gateGroup.add(bannerL.root);
+                    }
+                    const bannerR = CharacterAssetManager.createInstance('banner');
+                    if (bannerR) {
+                        bannerR.root.scale.set(1.6, 1.6, 1.6);
+                        bannerR.root.position.set(2.4, 4.3, 0.1);
+                        gateGroup.add(bannerR.root);
+                    }
+
+                    // 2 Vệ binh hoàng gia tí hon đứng gác chào mừng
+                    const soldierL = CharacterAssetManager.createInstance('character-soldier');
+                    if (soldierL) {
+                        soldierL.root.scale.set(1.7, 1.7, 1.7);
+                        soldierL.root.position.set(-2.2, 0, 1.5);
+                        soldierL.root.rotation.y = Math.PI / 6;
+                        if (soldierL.actions.has('emote-yes')) soldierL.actions.get('emote-yes').play();
+                        else if (soldierL.actions.has('idle')) soldierL.actions.get('idle').play();
+                        gateGroup.add(soldierL.root);
+                        this.animatedProps.push(soldierL);
+                    }
+                    const soldierR = CharacterAssetManager.createInstance('character-soldier');
+                    if (soldierR) {
+                        soldierR.root.scale.set(1.7, 1.7, 1.7);
+                        soldierR.root.position.set(2.2, 0, 1.5);
+                        soldierR.root.rotation.y = -Math.PI / 6;
+                        if (soldierR.actions.has('idle')) soldierR.actions.get('idle').play();
+                        gateGroup.add(soldierR.root);
+                        this.animatedProps.push(soldierR);
+                    }
+
+                    // Colliders cho 2 tháp cổng thành
+                    this.colliders.push({ x: -3.8, z: 24, r: 1.8 });
+                    this.colliders.push({ x: 3.8, z: 24, r: 1.8 });
+                }
+
+                if (!has3DGate) {
+                    // Fallback cổng vòm pastel cầu vồng
+                    const archMat = new THREE.MeshLambertMaterial({ color: 0x89CFF0 });
+                    const torusGeo = new THREE.TorusGeometry(3.8, 0.45, 12, 32, Math.PI);
+                    const arch = new THREE.Mesh(torusGeo, archMat);
+                    arch.position.y = 3.8;
+                    gateGroup.add(arch);
+
+                    // 2 Cột bóng bay xoắn ốc
+                    const colors = [0xFFD1DC, 0x89CFF0, 0xF5D061, 0xFFFFFF];
+                    [-3.8, 3.8].forEach(xOffset => {
+                        for (let y = 0.5; y <= 3.8; y += 0.5) {
+                            const bGeo = new THREE.SphereGeometry(0.35, 12, 12);
+                            const bMat = new THREE.MeshLambertMaterial({ color: colors[Math.floor(y * 2) % colors.length] });
+                            const b = new THREE.Mesh(bGeo, bMat);
+                            b.position.set(xOffset + Math.sin(y * 3) * 0.15, y, Math.cos(y * 3) * 0.15);
+                            gateGroup.add(b);
+                        }
+                        this.colliders.push({ x: xOffset, z: 24, r: 0.9 });
+                    });
+                }
 
                 // Chữ nổi trên cổng: HAPPY BIRTHDAY TOM (canvas texture trên biển hiệu)
                 const bannerCanvas = document.createElement('canvas');
@@ -1848,7 +1915,7 @@
                 const bannerGeo = new THREE.PlaneGeometry(5.2, 1.3);
                 const bannerMat = new THREE.MeshBasicMaterial({ map: bannerTex, transparent: true });
                 const bannerMesh = new THREE.Mesh(bannerGeo, bannerMat);
-                bannerMesh.position.set(0, 4.4, 0.1);
+                bannerMesh.position.set(0, 4.8, 0.2);
                 gateGroup.add(bannerMesh);
 
                 // Thảm đỏ dẫn từ cổng vào sân tiệc
@@ -2513,6 +2580,15 @@
                     this.candleFlames.forEach((f, idx) => {
                         f.scale.y = 0.8 + Math.sin(time * 10 + idx) * 0.25;
                         f.rotation.z = Math.sin(time * 8 + idx) * 0.1;
+                    });
+                }
+
+                // Cập nhật hoạt ảnh cho các vệ binh hoàng gia và đồ trang trí 3D
+                if (this.animatedProps) {
+                    this.animatedProps.forEach(prop => {
+                        if (prop && prop.mixer) {
+                            prop.mixer.update(delta);
+                        }
                     });
                 }
             }
