@@ -870,6 +870,9 @@
       }
     }
     </script>
+
+    <!-- Dữ liệu mô hình 3D tự chứa (hỗ trợ mở trực tiếp file:// không cần web server) -->
+    <script src="3D/models-data.js"></script>
 </head>
 <body>
 
@@ -2536,23 +2539,45 @@
                 const loadList = [...this.models, ...this.accessories];
                 let loadedCount = 0;
 
+                const base64Data = window.KENNEY_MODELS_DATA;
+                const hasInlineData = base64Data && typeof base64Data === 'object';
+
                 const loadPromises = loadList.map(async (name) => {
-                    const encodedUrl = encodeURI(`3D/Models/GLB format/${name}.glb`);
                     try {
-                        const gltf = await this.loader.loadAsync(encodedUrl);
-                        gltf.scene.traverse((child) => {
-                            if (child.isMesh) {
-                                child.castShadow = true;
-                                child.receiveShadow = true;
-                                if (child.material) {
-                                    child.material.roughness = 0.8;
-                                }
+                        let gltf = null;
+                        if (hasInlineData && base64Data[name]) {
+                            // Phân giải trực tiếp từ bộ nhớ RAM (hoạt động 100% khi mở trực tiếp file://)
+                            const b64 = base64Data[name];
+                            const binStr = window.atob(b64);
+                            const len = binStr.length;
+                            const bytes = new Uint8Array(len);
+                            for (let i = 0; i < len; i++) {
+                                bytes[i] = binStr.charCodeAt(i);
                             }
-                        });
-                        this.cache.set(name, {
-                            scene: gltf.scene,
-                            animations: gltf.animations || []
-                        });
+                            gltf = await new Promise((resolve, reject) => {
+                                this.loader.parse(bytes.buffer, '', resolve, reject);
+                            });
+                        } else {
+                            // Tải qua giao thức HTTP / Web Server thông thường
+                            const encodedUrl = encodeURI(`3D/Models/GLB format/${name}.glb`);
+                            gltf = await this.loader.loadAsync(encodedUrl);
+                        }
+
+                        if (gltf && gltf.scene) {
+                            gltf.scene.traverse((child) => {
+                                if (child.isMesh) {
+                                    child.castShadow = true;
+                                    child.receiveShadow = true;
+                                    if (child.material) {
+                                        child.material.roughness = 0.8;
+                                    }
+                                }
+                            });
+                            this.cache.set(name, {
+                                scene: gltf.scene,
+                                animations: gltf.animations || []
+                            });
+                        }
                     } catch (err) {
                         console.warn(`[CharacterAssetManager] Không thể tải model ${name}:`, err);
                     }
